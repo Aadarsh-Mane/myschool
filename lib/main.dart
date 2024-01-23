@@ -6,10 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:myschool/Aboutus.dart';
 import 'package:myschool/AddData.dart';
+import 'package:myschool/BottomBar.dart';
+import 'package:myschool/ChatBot.dart';
+import 'package:myschool/Dictionary.dart';
+import 'package:myschool/Meaning.dart';
+import 'package:myschool/RegisterScreen.dart';
+import 'package:myschool/controllers/GoogleAuthScreen.dart';
+import 'package:myschool/floaf.dart';
+import 'package:myschool/introScreen/IntroScreen.dart';
+
+import 'package:myschool/pages/CalenderEvent.dart';
+import 'package:myschool/pages/HomeWork.dart';
 import 'package:myschool/pages/home_page.dart';
 import 'package:myschool/pages/my_page_button.dart';
+import 'package:myschool/user/CalenderEvent.dart';
 import 'package:myschool/user/HomePage.dart';
+import 'package:myschool/user/TimeTableScreen.dart';
+import 'package:myschool/user/YoutubeWatchScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,21 +46,55 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const ButtonPage(),
-      home: const SideBar(),
-      // home: const ConcentricTransitionPage(),
+      // home: YoutubeListPage(),
+      // home: BottomBar(),
+      // home: GoogleAuthScreen()
+      // home: AboutUsScreen(),
+      // home: UserChatScreen()
+      // home: const BottomBar(),
+      // home: MeaningScreen1()
+      // home: TimeTableScreen(),
+      // home: MyHomePage(),
+      home: const ConcentricTransitionPage(),
+      // home: UserCalendarScreen()
+      // home: UserCalendarScreen()
+      // home: HomeWork()
+      // home: UserHomePage(),
+      //  home: AuthScreen(),
+      // home: SignUpScreen(),
+      // home: BuyerRegisterScreen()
+      // home: YoutubeListPage(),
     );
   }
 }
 
-class SideBar extends StatelessWidget {
-  const SideBar({super.key});
+class SideBar extends StatefulWidget {
+  @override
+  State<SideBar> createState() => _SideBarState();
+}
 
+class _SideBarState extends State<SideBar> {
+  Widget page = MainScreen();
+
+  // const SideBar({super.key});
   @override
   Widget build(BuildContext context) {
     return ZoomDrawer(
-      menuScreen: MenuScreen(),
-      mainScreen: MainScreen(),
+      menuScreen: Builder(builder: (context) {
+        return MenuScreen(
+          onPageChanged: (a) {
+            setState(() {
+              if (a is Widget) {
+                page = a;
+              }
+            });
+            ZoomDrawer.of(context)!.close();
+          },
+        );
+      }),
+      mainScreen: page,
       borderRadius: 24.0,
+      showShadow: true,
     );
   }
 }
@@ -57,10 +106,12 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () => ZoomDrawer.of(context)!.toggle()),
+        // backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xFFF5EEE6),
+
+        // leading: IconButton(
+        //     icon: Icon(Icons.menu),
+        //     onPressed: () => ZoomDrawer.of(context)!.toggle()),
       ),
       body: UserHomePage(),
     );
@@ -68,53 +119,43 @@ class MainScreen extends StatelessWidget {
 }
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({Key? key});
+  MenuScreen({Key? key, required this.onPageChanged}) : super(key: key);
+  final Function(Widget) onPageChanged;
+  List<ListItems> drawerItems = [
+    // ListItems(Icon(Icons.payment), Text('payment'), UserHomePage()),
+    ListItems(Icon(Icons.payment), Text('About'), AboutUsScreen()),
+    ListItems(
+        Icon(Icons.ice_skating_rounded), Text('Level Up'), MeaningScreen()),
+    ListItems(
+        Icon(Icons.ice_skating_rounded), Text('Events'), UserCalendarScreen()),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 231, 140, 211),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              title: const Text(
-                'Item 1',
-                style: TextStyle(color: Colors.white),
-              ),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Item1Page()), // Navigate to Item1Page
-                );
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'Item 2',
-                style: TextStyle(color: Colors.white),
-              ),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Item2Page()), // Navigate to Item2Page
-                );
-              },
-            ),
-            // Add more ListTiles for additional menu items
-          ],
-        ),
-      ),
+      backgroundColor: Colors.indigo,
+      body: Theme(
+          data: ThemeData.dark(),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: drawerItems
+                  .map((e) => ListTile(
+                        onTap: () {
+                          onPageChanged(e.page);
+                        },
+                        title: e.title,
+                        leading: e.icon,
+                      ))
+                  .toList())),
     );
   }
+}
+
+class ListItems {
+  final Icon icon;
+  final Text title;
+  final Widget page;
+  ListItems(this.icon, this.title, this.page);
 }
 
 class Item1Page extends StatelessWidget {
@@ -123,6 +164,11 @@ class Item1Page extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Item 1 Page'),
+        leading: IconButton(
+            onPressed: () => {
+                  ZoomDrawer.of(context)!.toggle(),
+                },
+            icon: Icon(Icons.menu)),
       ),
       body: Center(
         child: const Text('This is Item 1 Page content'),
@@ -141,118 +187,6 @@ class Item2Page extends StatelessWidget {
     );
   }
 }
+// Import your BottomBar file
 
-class ConcentricTransitionPage extends StatefulWidget {
-  const ConcentricTransitionPage({Key? key}) : super(key: key);
 
-  @override
-  State<ConcentricTransitionPage> createState() =>
-      _ConcentricTransitionPageState();
-}
-
-class _ConcentricTransitionPageState extends State<ConcentricTransitionPage> {
-/////////////////////////////////////
-//@CodeWithFlexz on Instagram
-//
-//AmirBayat0 on Github
-//Programming with Flexz on Youtube
-/////////////////////////////////////
-  List<ConcentricModel> concentrics = [
-    ConcentricModel(
-      lottie: "https://assets4.lottiefiles.com/packages/lf20_lhpm8hja.json",
-      text: "Get new\nknowledge",
-    ),
-    ConcentricModel(
-      lottie: "https://assets6.lottiefiles.com/packages/lf20_tk6xxpgj.json",
-      text: "Take time for\nyourself",
-    ),
-    ConcentricModel(
-      lottie: "https://assets8.lottiefiles.com/packages/lf20_fbzszqak.json",
-      text: "Do what you\nlove",
-    ),
-    ConcentricModel(
-      lottie: "https://assets8.lottiefiles.com/packages/lf20_prsoqox5.json",
-      text: "Try something\nnew",
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: ConcentricPageView(
-          onChange: (val) {},
-          colors: const <Color>[
-            Color.fromARGB(255, 249, 153, 198),
-            Color(0xff013BCA),
-            Colors.white,
-            Color.fromARGB(183, 244, 114, 240),
-          ],
-          itemCount: concentrics.length,
-          onFinish: () {
-            print("Finished");
-          },
-          itemBuilder: (int index) {
-            return Column(
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20, right: 20),
-                    child: GestureDetector(
-                      onTap: () {
-                        print("Skipped");
-                      },
-                      child: Text(
-                        "Skip",
-                        style: TextStyle(
-                            color: index == 2 ? Colors.black : Colors.white,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 25),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 290,
-                  width: 300,
-                  child:
-                      Lottie.network(concentrics[index].lottie, animate: true),
-                ),
-                Text(
-                  concentrics[index].text,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(
-                    color: index == 2 ? Colors.black : Colors.white,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Text(
-                    "${index + 1} / ${concentrics.length}",
-                    style: GoogleFonts.rubik(
-                        color: index == 2 ? Colors.black : Colors.white,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 22),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class ConcentricModel {
-  String lottie;
-  String text;
-  //
-  ConcentricModel({
-    required this.lottie,
-    required this.text,
-  });
-}

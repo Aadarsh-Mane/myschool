@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myschool/pages/YoutubePage.dart';
 import 'package:myschool/pages/home_page.dart';
 import 'package:myschool/pages/time_table_page.dart';
 
@@ -36,6 +37,8 @@ class ButtonPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Action for the third button
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => YoutubePage()));
               },
               child: const Text('Events '),
             ),

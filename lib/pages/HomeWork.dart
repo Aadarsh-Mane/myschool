@@ -1,0 +1,272 @@
+import 'package:image/image.dart' as img;
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class HomeWork extends StatefulWidget {
+  @override
+  _HomeWorkState createState() => _HomeWorkState();
+}
+
+class _HomeWorkState extends State<HomeWork> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  String _selectedOption = 'Option 1'; // Default value for dropdown
+  String?
+      _selectedDocumentId; // Keep track of the selected document for updating
+  File? _selectedImage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Flutter Firebase CRUD'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(labelText: 'Title'),
+            ),
+            TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(labelText: 'Description'),
+            ),
+            SizedBox(height: 20),
+            DropdownButton<String>(
+              value: _selectedOption,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedOption = newValue!;
+                });
+              },
+              items: <String>['Option 1', 'Option 2', 'Option 3']
+                  .map<DropdownMenuItem<String>>(
+                    (String value) => DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    ),
+                  )
+                  .toList(),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                _pickImage();
+              },
+              child: Text('Pick Image'),
+            ),
+            _selectedImage != null
+                ? Image.file(_selectedImage!)
+                : Container(), // Display selected image if any
+            SizedBox(height: 20),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (_selectedDocumentId == null) {
+                      _addData();
+                    } else {
+                      _updateData(_selectedDocumentId!);
+                    }
+                  },
+                  child: Text(
+                      _selectedDocumentId == null ? 'Add Data' : 'Update Data'),
+                ),
+                SizedBox(width: 10),
+              ],
+            ),
+            SizedBox(height: 20),
+            _buildDataList(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Future<void> _pickImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _selectedImage = File(pickedFile.path);
+  //     });
+  //   }
+  // }
+
+// ...
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // Read the picked image
+      final File imageFile = File(pickedFile.path);
+      img.Image image = img.decodeImage(imageFile.readAsBytesSync())!;
+
+      // Resize the image (adjust dimensions as needed)
+      img.Image resizedImage = img.copyResize(image, width: 200, height: 200);
+
+      // Save the resized image back to a file
+      final resizedImageFile = File(pickedFile.path)
+        ..writeAsBytesSync(img.encodeJpg(resizedImage));
+
+      setState(() {
+        _selectedImage = resizedImageFile;
+      });
+    }
+  }
+
+  Future<void> _addData() async {
+    if (_titleController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty) {
+      String? imageUrl = await _uploadImage();
+
+      await _firestore.collection('data').add({
+        'title': _titleController.text,
+        'description': _descriptionController.text,
+        'option': _selectedOption,
+        'image': imageUrl,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Clear text fields after adding data
+      _titleController.clear();
+      _descriptionController.clear();
+      // imageUrl = null; // Set imageUrl to null to clear the value
+
+      setState(() {
+        _selectedOption = 'Option 1';
+        _selectedImage = null; // Reset selected image after adding data
+        // Reset dropdown to default after adding data
+      });
+    }
+  }
+
+  Future<void> _updateData(String documentId) async {
+    if (_titleController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty) {
+      String? imageUrl = await _uploadImage();
+
+      await _firestore.collection('homie').doc(documentId).update({
+        'title': _titleController.text,
+        'description': _descriptionController.text,
+        'option': _selectedOption,
+        'image': imageUrl,
+      });
+
+      // Clear text fields after updating data
+      _titleController.clear();
+      _descriptionController.clear();
+      imageUrl = null;
+      setState(() {
+        _selectedOption =
+            'Option 1'; // Reset dropdown to default after updating data
+        _selectedDocumentId = null; // Reset selected document ID after updating
+        _selectedImage = null; // Reset selected image after adding data
+      });
+    }
+  }
+
+  Widget _buildDataList() {
+    return Expanded(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('data').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+
+          var data = snapshot.data?.docs;
+
+          return ListView.builder(
+            itemCount: data?.length,
+            itemBuilder: (context, index) {
+              var document = data?[index];
+              var title = document?['title'];
+              var description = document?['description'];
+              var option = document?['option'];
+              var imageUrl = document?['image'];
+
+              return Card(
+                child: ListTile(
+                  title: Text(title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(description),
+                      Text('Option: $option'),
+                      imageUrl != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                imageUrl,
+                                height: 20,
+                                width: 20, // Adjust the height as needed
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _deleteData(document!.id);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          _selectDocumentForUpdate(
+                              document!.id, title, description, option);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<String> _uploadImage() async {
+    if (_selectedImage == null) return '';
+
+    final Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    final UploadTask uploadTask = storageRef.putFile(_selectedImage!);
+    await uploadTask.whenComplete(() => null);
+
+    return await storageRef.getDownloadURL();
+  }
+
+  Future<void> _deleteData(String documentId) async {
+    await _firestore.collection('data').doc(documentId).delete();
+  }
+
+  void _selectDocumentForUpdate(
+      String documentId, String title, String description, String option) {
+    setState(() {
+      _selectedDocumentId = documentId;
+      _titleController.text = title;
+      _descriptionController.text = description;
+      _selectedOption = option;
+    });
+  }
+}

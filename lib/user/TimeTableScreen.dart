@@ -58,7 +58,7 @@ class CollectionDataList extends StatelessWidget {
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Document: $documentName'),
+                  Text('TimeTable: $documentName'),
                   ElevatedButton(
                     onPressed: () {
                       if (urlText.isNotEmpty) {

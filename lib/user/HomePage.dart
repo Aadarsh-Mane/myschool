@@ -17,7 +17,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myschool/BottomBar.dart';
+import 'package:myschool/ChatBot.dart';
 import 'package:myschool/user/CollectionScreen.dart';
+import 'package:myschool/user/YoutubeWatchScreen.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -29,7 +32,10 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   List<String> collectionNames = [
     'notes',
-    'timetable'
+    'timetable',
+    'data',
+    'events'
+    // 'homie'
   ]; // Add more collection names as needed
   Map<String, int> notificationCounts = {};
 
@@ -58,7 +64,7 @@ class _UserHomePageState extends State<UserHomePage> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Color(0xFFF5EEE6),
               borderRadius: const BorderRadius.only(
                 bottomRight: Radius.circular(50),
               ),
@@ -72,15 +78,16 @@ class _UserHomePageState extends State<UserHomePage> {
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall
-                          ?.copyWith(color: Colors.white)),
+                          ?.copyWith(color: Colors.cyan)),
                   subtitle: Text('Good Morning',
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium
-                          ?.copyWith(color: Colors.white54)),
+                          ?.copyWith(color: Colors.cyan[300])),
                   trailing: const CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage('assets/images/user.JPG'),
+                    backgroundImage: NetworkImage(
+                        'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'),
                   ),
                 ),
                 const SizedBox(height: 30)
@@ -88,7 +95,9 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
           ),
           Container(
-            color: Theme.of(context).primaryColor,
+            // color: Theme.of(context).primaryColor,
+            color: Color(0xFFF5EEE6),
+
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               decoration: const BoxDecoration(
@@ -104,12 +113,14 @@ class _UserHomePageState extends State<UserHomePage> {
                 children: [
                   itemDashboard('Events', CupertinoIcons.play_rectangle,
                       Colors.deepOrange, 'notes'),
-                  itemDashboard('Announc', CupertinoIcons.graph_circle,
+                  itemDashboard('TimeTable', CupertinoIcons.graph_circle,
                       Colors.green, 'timetable'),
                   itemDashboard('Latest', CupertinoIcons.person_2,
                       Colors.purple, 'notes'),
-                  itemDashboard('TimeTable', CupertinoIcons.chat_bubble_2,
+                  itemDashboard('Announce', CupertinoIcons.chat_bubble_2,
                       Colors.brown, 'notes'),
+                  itemDashboard('Data', CupertinoIcons.chat_bubble_2,
+                      Colors.brown, 'data'),
                   // itemDashboard('Study', CupertinoIcons.money_dollar_circle,
                   //     Colors.indigo, 'notes'),
                   // itemDashboard('Attende', CupertinoIcons.add_circled,
@@ -122,14 +133,30 @@ class _UserHomePageState extends State<UserHomePage> {
               ),
             ),
           ),
-          const SizedBox(height: 20)
+          const SizedBox(height: 20),
+          // BottomBar()
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        onPressed: () {
+          Navigator.of(context)
+              .push(PageRouteBuilder(pageBuilder: (context, animation, _) {
+            return MyChatScreen();
+          }));
+        },
+        child: Icon(Icons.add, color: Colors.blue),
       ),
     );
   }
 
-  Widget itemDashboard(String title, IconData iconData, Color background,
-      String collectionName) {
+  Widget itemDashboard(
+    String title,
+    IconData iconData,
+    Color background,
+    String collectionName,
+  ) {
+    print(collectionName.length);
     int notificationCount = notificationCounts[collectionName] ?? 0;
 
     return GestureDetector(
@@ -156,60 +183,26 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-          child: Stack(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 25),
-                    decoration: BoxDecoration(
-                      color: background,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 2, vertical: 0),
-                      child: Icon(iconData, color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(title.toUpperCase(),
-                        style: Theme.of(context).textTheme.titleMedium),
-                  ),
-                ],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: background,
+                shape: BoxShape.circle,
               ),
-              if (notificationCount >
-                  0) // Show notification count only if it's greater than 0
-                Positioned(
-                  top: 2,
-                  right: 2,
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      // shape: BoxShape.circle,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.notifications, color: Colors.red, size: 16),
-                        const SizedBox(width: 2),
-                        Text(
-                          '$notificationCount',
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
+              child: Icon(iconData, color: Colors.white),
+            ),
+            const SizedBox(height: 8),
+            Text(title.toUpperCase(),
+                style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              'Unread: $notificationCount',
+              style: TextStyle(fontSize: 12, color: Colors.red),
+            ),
+          ],
         ),
       ),
     );
