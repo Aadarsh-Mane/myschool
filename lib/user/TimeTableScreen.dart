@@ -36,6 +36,9 @@ class CollectionDataList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/logot.png'),
+        ),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
