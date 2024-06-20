@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:myschool/pages/HomeWork.dart';
+import 'package:myschool/user/HomeWork/ClassEight.dart';
+import 'package:myschool/user/HomeWork/HomeWorkSpecific.dart';
 import 'package:myschool/user/TimeTableScreen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:photo_view/photo_view.dart';
@@ -53,6 +56,15 @@ class CollectionDataScreen extends StatelessWidget {
         return Collection2DataList(
           collectionName: 'timetable',
         );
+      case 'nineth':
+        return HomeWorkSpecific(
+          collectionName: 'nineth',
+        );
+      case 'Eight':
+        return WorkEight(
+          collectionName: 'Eight',
+        );
+
       // Add more cases for each collection
       default:
         return Text('Unknown Collection');
@@ -361,6 +373,7 @@ class Collection1DataList extends StatelessWidget {
                           return Hero(
                             tag: 'card$index',
                             child: Card(
+                              // color: Colors.red,
                               elevation: 8,
                               margin: EdgeInsets.symmetric(
                                 horizontal: 15,
@@ -374,6 +387,19 @@ class Collection1DataList extends StatelessWidget {
                                   // Add navigation or additional functionality here
                                 },
                                 child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Color.fromARGB(
+                                            255, 234, 195, 234), // Start color
+                                        Color(
+                                            0xFF97D9E1), // End color, // End color
+                                      ], // Example gradient colors
+                                    ),
+                                  ),
                                   padding: EdgeInsets.all(15.0),
                                   child: Column(
                                     crossAxisAlignment:
@@ -389,10 +415,11 @@ class Collection1DataList extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(height: 10),
-                                      FadeInText(
+                                      Text(
                                         'Date Created: ${DateFormat('dd-MM-yyyy ').format(timestamp)}',
                                         style: TextStyle(
-                                          color: Colors.grey,
+                                          color:
+                                              Colors.red, // Change color here
                                         ),
                                       ),
                                     ],

@@ -1,25 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image/image.dart' as img;
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-
-class HomeWork extends StatefulWidget {
+class TenClass extends StatefulWidget {
   @override
-  _HomeWorkState createState() => _HomeWorkState();
+  _TenClassState createState() => _TenClassState();
 }
 
-class _HomeWorkState extends State<HomeWork> {
+class _TenClassState extends State<TenClass> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  String _selectedOption = 'Option 1'; // Default value for dropdown
+  String _selectedOption = 'All'; // Default value for dropdown
   String?
       _selectedDocumentId; // Keep track of the selected document for updating
   File? _selectedImage;
+  bool _uploadingImage = false; // Flag to track image upload status
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _HomeWorkState extends State<HomeWork> {
                   _selectedOption = newValue!;
                 });
               },
-              items: <String>['Option 1', 'Option 2', 'Option 3']
+              items: <String>['All', 'A', 'B', 'C', 'D', 'E', 'F']
                   .map<DropdownMenuItem<String>>(
                     (String value) => DropdownMenuItem<String>(
                       value: value,
@@ -81,6 +81,8 @@ class _HomeWorkState extends State<HomeWork> {
                       _selectedDocumentId == null ? 'Add Data' : 'Update Data'),
                 ),
                 SizedBox(width: 10),
+                // Display circular progress indicator while uploading image
+                if (_uploadingImage) CircularProgressIndicator(),
               ],
             ),
             SizedBox(height: 20),
@@ -90,19 +92,6 @@ class _HomeWorkState extends State<HomeWork> {
       ),
     );
   }
-
-  // Future<void> _pickImage() async {
-  //   final picker = ImagePicker();
-  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _selectedImage = File(pickedFile.path);
-  //     });
-  //   }
-  // }
-
-// ...
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -129,9 +118,13 @@ class _HomeWorkState extends State<HomeWork> {
   Future<void> _addData() async {
     if (_titleController.text.isNotEmpty &&
         _descriptionController.text.isNotEmpty) {
+      setState(() {
+        _uploadingImage = true; // Start image upload indicator
+      });
+
       String? imageUrl = await _uploadImage();
 
-      await _firestore.collection('data').add({
+      await _firestore.collection('ten').add({
         'title': _titleController.text,
         'description': _descriptionController.text,
         'option': _selectedOption,
@@ -142,12 +135,10 @@ class _HomeWorkState extends State<HomeWork> {
       // Clear text fields after adding data
       _titleController.clear();
       _descriptionController.clear();
-      // imageUrl = null; // Set imageUrl to null to clear the value
-
       setState(() {
-        _selectedOption = 'Option 1';
+        _selectedOption = 'All';
         _selectedImage = null; // Reset selected image after adding data
-        // Reset dropdown to default after adding data
+        _uploadingImage = false; // Stop image upload indicator
       });
     }
   }
@@ -155,24 +146,36 @@ class _HomeWorkState extends State<HomeWork> {
   Future<void> _updateData(String documentId) async {
     if (_titleController.text.isNotEmpty &&
         _descriptionController.text.isNotEmpty) {
-      String? imageUrl = await _uploadImage();
+      setState(() {
+        _uploadingImage = true; // Start image upload indicator
+      });
 
-      await _firestore.collection('data').doc(documentId).update({
+      String? imageUrl;
+      if (_selectedImage != null) {
+        imageUrl = await _uploadImage();
+      }
+
+      Map<String, dynamic> updatedData = {
         'title': _titleController.text,
         'description': _descriptionController.text,
         'option': _selectedOption,
-        'image': imageUrl,
-      });
+      };
+
+      if (imageUrl != null) {
+        updatedData['image'] = imageUrl;
+      }
+
+      await _firestore.collection('ten').doc(documentId).update(updatedData);
 
       // Clear text fields after updating data
       _titleController.clear();
       _descriptionController.clear();
-      imageUrl = null;
       setState(() {
         _selectedOption =
-            'Option 1'; // Reset dropdown to default after updating data
+            'All'; // Reset dropdown to default after updating data
         _selectedDocumentId = null; // Reset selected document ID after updating
         _selectedImage = null; // Reset selected image after adding data
+        _uploadingImage = false; // Stop image upload indicator
       });
     }
   }
@@ -180,7 +183,7 @@ class _HomeWorkState extends State<HomeWork> {
   Widget _buildDataList() {
     return Expanded(
       child: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('data').snapshots(),
+        stream: _firestore.collection('ten').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -206,12 +209,17 @@ class _HomeWorkState extends State<HomeWork> {
                       Text(description),
                       Text('Option: $option'),
                       imageUrl != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                imageUrl,
-                                height: 20,
-                                width: 20, // Adjust the height as needed
+                          ? GestureDetector(
+                              onTap: () {
+                                _viewImage(imageUrl);
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network(
+                                  imageUrl,
+                                  height: 120,
+                                  width: 80, // Adjust the hten as needed
+                                ),
                               ),
                             )
                           : Container(),
@@ -244,6 +252,33 @@ class _HomeWorkState extends State<HomeWork> {
     );
   }
 
+  void _viewImage(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              imageUrl,
+              height: 400,
+              width: 300,
+              fit: BoxFit.cover,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<String> _uploadImage() async {
     if (_selectedImage == null) return '';
 
@@ -257,7 +292,7 @@ class _HomeWorkState extends State<HomeWork> {
   }
 
   Future<void> _deleteData(String documentId) async {
-    await _firestore.collection('data').doc(documentId).delete();
+    await _firestore.collection('ten').doc(documentId).delete();
   }
 
   void _selectDocumentForUpdate(

@@ -1,26 +1,10 @@
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'Dashboard',
-//       theme: ThemeData(
-//         primarySwatch: Colors.indigo,
-//       ),
-//       home: const UserHomePage(),
-//     );
-//   }
-// }
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/ChatBot.dart';
 import 'package:myschool/user/CollectionScreen.dart';
 import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -30,11 +14,16 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late String _userName = ''; // State variable to hold the user's name
+
   List<String> collectionNames = [
     'notes',
     'timetable',
     'data',
-    'events'
+    'events',
+    'ninea',
     // 'homie'
   ]; // Add more collection names as needed
   Map<String, int> notificationCounts = {};
@@ -42,7 +31,23 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   void initState() {
     super.initState();
+    getUserFullName();
     updateNotificationCounts();
+  }
+
+  Future<void> getUserFullName() async {
+    try {
+      String uid = _auth.currentUser!.uid;
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await _firestore.collection('buyers').doc(uid).get();
+
+      setState(() {
+        _userName =
+            snapshot['fullName']; // Update _userName with the user's full name
+      });
+    } catch (e) {
+      print('Error fetching user information: $e');
+    }
   }
 
   Future<void> updateNotificationCounts() async {
@@ -59,6 +64,9 @@ class _UserHomePageState extends State<UserHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Center(child: Text("dxxsx")),
+      // ),
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -74,12 +82,12 @@ class _UserHomePageState extends State<UserHomePage> {
                 // const SizedBox(width: 300),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 30),
-                  title: Text('Hello !',
+                  title: Text('Hello, $_userName!', // Display the user's name
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall
                           ?.copyWith(color: Colors.cyan)),
-                  subtitle: Text('Good Morning',
+                  subtitle: Text('Welcome to MySchool',
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium
@@ -111,24 +119,16 @@ class _UserHomePageState extends State<UserHomePage> {
                 crossAxisSpacing: 40,
                 mainAxisSpacing: 30,
                 children: [
-                  itemDashboard('Events', CupertinoIcons.play_rectangle,
-                      Colors.deepOrange, 'notes'),
-                  itemDashboard('TimeTable', CupertinoIcons.graph_circle,
-                      Colors.green, 'timetable'),
-                  itemDashboard('Latest', CupertinoIcons.person_2,
-                      Colors.purple, 'notes'),
-                  itemDashboard('Announce', CupertinoIcons.chat_bubble_2,
-                      Colors.brown, 'notes'),
-                  itemDashboard('Data', CupertinoIcons.chat_bubble_2,
-                      Colors.brown, 'data'),
-                  // itemDashboard('Study', CupertinoIcons.money_dollar_circle,
-                  //     Colors.indigo, 'notes'),
-                  // itemDashboard('Attende', CupertinoIcons.add_circled,
-                  //     Colors.teal, 'notes'),
-                  // itemDashboard('About', CupertinoIcons.question_circle,
-                  //     Colors.blue, 'notes'),
-                  // itemDashboard('Contact', CupertinoIcons.phone,
-                  //     Colors.pinkAccent, 'notes')
+                  itemDashboard(
+                      'Events', Icons.event, Colors.deepOrange, 'notes'),
+                  itemDashboard(
+                      'TimeTable', Icons.schedule, Colors.green, 'timetable'),
+                  itemDashboard('Latest', Icons.person, Colors.purple, 'notes'),
+                  itemDashboard(
+                      'Announcement', Icons.chat, Colors.brown, 'notes'),
+                  itemDashboard(
+                      'E-content', Icons.article, Colors.blue, 'data'),
+                  // Add more items as needed
                 ],
               ),
             ),
@@ -150,13 +150,8 @@ class _UserHomePageState extends State<UserHomePage> {
     );
   }
 
-  Widget itemDashboard(
-    String title,
-    IconData iconData,
-    Color background,
-    String collectionName,
-  ) {
-    print(collectionName.length);
+  Widget itemDashboard(String title, IconData iconData, Color background,
+      String collectionName) {
     int notificationCount = notificationCounts[collectionName] ?? 0;
 
     return GestureDetector(
@@ -195,12 +190,17 @@ class _UserHomePageState extends State<UserHomePage> {
               child: Icon(iconData, color: Colors.white),
             ),
             const SizedBox(height: 8),
-            Text(title.toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(title.toUpperCase(),
+                  style: Theme.of(context).textTheme.titleSmall),
+            ),
             const SizedBox(height: 4),
-            Text(
-              'Unread: $notificationCount',
-              style: TextStyle(fontSize: 12, color: Colors.red),
+            FittedBox(
+              child: Text(
+                'Unread: $notificationCount',
+                style: TextStyle(fontSize: 12, color: Colors.red),
+              ),
             ),
           ],
         ),

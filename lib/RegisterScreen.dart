@@ -1,7 +1,10 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/Snack.dart';
 import 'package:myschool/controllers/AuthScreen.dart';
+import 'package:myschool/user/LoginScreen.dart';
+import 'package:quickalert/quickalert.dart'; // Import the login screen
 
 class BuyerRegisterScreen extends StatefulWidget {
   @override
@@ -20,16 +23,12 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Check if the user is already authenticated when the screen is initialized
     _checkAuthentication();
   }
 
   _checkAuthentication() async {
     bool isAuthenticated = await _authController.isUserAuthenticated();
-
     if (isAuthenticated) {
-      // User is already authenticated, navigate to BottomBar
       _navigateToBottomBar();
     }
   }
@@ -48,21 +47,22 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
           _isLoading = false;
         });
 
-        // Navigate to the BottomBar screen after successful registration
         _navigateToBottomBar();
-
-        showSnack(context, 'Congratulations! Your account has been created.');
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: 'Transaction Completed Successfully!',
+        );
       });
     } else {
       setState(() {
         _isLoading = false;
       });
-      showSnack(context, 'Please fill in all fields.');
+      _showErrorSnackbar('Please fill in all fields.');
     }
   }
 
   _navigateToBottomBar() {
-    // Navigate to the BottomBar screen and remove the registration screen from the stack
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => BottomBar()),
@@ -70,16 +70,39 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
     );
   }
 
+  _navigateToLoginScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
+  void _showErrorSnackbar(String message) {
+    final snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.fixed,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Error',
+        message: message,
+        contentType: ContentType.warning,
+      ),
+    );
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      // Disable back button functionality when the user is logged in
       onWillPop: () async {
         bool isAuthenticated = await _authController.isUserAuthenticated();
         return !isAuthenticated;
       },
       child: Scaffold(
-        backgroundColor: Color(0xFFF5EEE6), // Background color
+        backgroundColor: Color(0xFFF5EEE6),
         body: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -87,7 +110,6 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Your UI code goes here
                   _buildTextField('Enter Email', (value) {
                     email = value;
                   }),
@@ -119,7 +141,8 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         obscureText: obscureText,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'This field must not be empty';
+            _showErrorSnackbar('Please fill in all fields.');
+            return '';
           } else {
             return null;
           }
@@ -140,7 +163,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         width: MediaQuery.of(context).size.width - 40,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.orange, // Custom button color
+          color: Colors.orange,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
@@ -148,14 +171,11 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
               ? CircularProgressIndicator(
                   color: Colors.white,
                 )
-              : TextButton(
-                  onPressed: _navigateToBottomBar,
-                  child: Text(
-                    'Register',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
+              : Text(
+                  'Register',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
         ),
@@ -169,7 +189,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
       children: [
         Text('Already have an account?'),
         TextButton(
-          onPressed: _navigateToBottomBar, // Change this to your login logic
+          onPressed: _navigateToLoginScreen, // Navigate to the login screen
           child: Text(
             'Login',
             style: TextStyle(

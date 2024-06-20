@@ -13,22 +13,32 @@ import 'package:myschool/ChatBot.dart';
 import 'package:myschool/Dictionary.dart';
 import 'package:myschool/Meaning.dart';
 import 'package:myschool/RegisterScreen.dart';
+import 'package:myschool/admin/BiometrciScreen.dart';
+import 'package:myschool/api/sheets/user_sheet_api.dart';
 import 'package:myschool/controllers/GoogleAuthScreen.dart';
+import 'package:myschool/controllers/LogoutScreen.dart';
 import 'package:myschool/floaf.dart';
 import 'package:myschool/introScreen/IntroScreen.dart';
+import 'package:myschool/modalsheet/create_sheet.dart';
 
 import 'package:myschool/pages/CalenderEvent.dart';
 import 'package:myschool/pages/HomeWork.dart';
+import 'package:myschool/pages/SpecificHomeWork/EigthClass.dart';
+import 'package:myschool/pages/SpecificHomeWork/NineClass.dart';
+import 'package:myschool/pages/e-content/econtent_page.dart';
 import 'package:myschool/pages/home_page.dart';
-import 'package:myschool/pages/my_page_button.dart';
+import 'package:myschool/pages/shared/my_page_button.dart';
 import 'package:myschool/user/CalenderEvent.dart';
 import 'package:myschool/user/HomePage.dart';
+import 'package:myschool/user/HomeWork/ClassEight.dart';
+import 'package:myschool/user/HomeWork/DashboardScreen.dart';
 import 'package:myschool/user/TimeTableScreen.dart';
 import 'package:myschool/user/YoutubeWatchScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await UserSheetsApi.init();
   runApp(const MyApp());
 }
 
@@ -46,16 +56,23 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const ButtonPage(),
+      // home:Bott
       // home: YoutubeListPage(),
-      // home: BottomBar(),
+      // home: NineClass(),
+      // home: BottomBar()
+      // home: BiometricRegistrationScreen()
+      // home: AddDocumentPage()
+      // home: B()
+
       // home: GoogleAuthScreen()
       // home: AboutUsScreen(),
       // home: UserChatScreen()
-      // home: const BottomBar(),
+      home: const BottomBar(),
       // home: MeaningScreen1()
       // home: TimeTableScreen(),
-      // home: MyHomePage(),
-      home: const ConcentricTransitionPage(),
+      // home: const ButtonPage(),
+      // home: CreatSheetPage()
+      // home: const ConcentricTransitionPage(),
       // home: UserCalendarScreen()
       // home: UserCalendarScreen()
       // home: HomeWork()
@@ -76,25 +93,32 @@ class SideBar extends StatefulWidget {
 class _SideBarState extends State<SideBar> {
   Widget page = MainScreen();
 
-  // const SideBar({super.key});
   @override
   Widget build(BuildContext context) {
-    return ZoomDrawer(
-      menuScreen: Builder(builder: (context) {
-        return MenuScreen(
-          onPageChanged: (a) {
-            setState(() {
-              if (a is Widget) {
-                page = a;
-              }
-            });
-            ZoomDrawer.of(context)!.close();
-          },
-        );
-      }),
-      mainScreen: page,
-      borderRadius: 24.0,
-      showShadow: true,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onHorizontalDragUpdate: (details) {
+        if (details.delta.dx > 10) {
+          ZoomDrawer.of(context)!.open();
+        }
+      },
+      child: ZoomDrawer(
+        menuScreen: Builder(builder: (context) {
+          return MenuScreen(
+            onPageChanged: (a) {
+              setState(() {
+                if (a is Widget) {
+                  page = a;
+                }
+              });
+              ZoomDrawer.of(context)!.close();
+            },
+          );
+        }),
+        mainScreen: page,
+        borderRadius: 100.0,
+        showShadow: true,
+      ),
     );
   }
 }
@@ -106,7 +130,10 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Theme.of(context).primaryColor,
+        // backgroundColor
+        //: Theme.of(context).primaryColor,
+        automaticallyImplyLeading: false, // This line removes the back arrow
+
         backgroundColor: Color(0xFFF5EEE6),
 
         // leading: IconButton(
@@ -123,11 +150,15 @@ class MenuScreen extends StatelessWidget {
   final Function(Widget) onPageChanged;
   List<ListItems> drawerItems = [
     // ListItems(Icon(Icons.payment), Text('payment'), UserHomePage()),
+    ListItems(Icon(Icons.home), Text('Back'), SideBar()),
     ListItems(Icon(Icons.payment), Text('About'), AboutUsScreen()),
     ListItems(
         Icon(Icons.ice_skating_rounded), Text('Level Up'), MeaningScreen()),
     ListItems(
         Icon(Icons.ice_skating_rounded), Text('Events'), UserCalendarScreen()),
+    ListItems(
+        Icon(Icons.ice_skating_rounded), Text('Classes'), DashBoardScreen()),
+    ListItems(Icon(Icons.logout), Text('Logout'), LogoutScreen()),
   ];
 
   @override

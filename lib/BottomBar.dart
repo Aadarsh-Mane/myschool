@@ -1,8 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:myschool/RegisterScreen.dart';
+import 'package:myschool/Snack.dart';
+import 'package:myschool/controllers/AuthScreen.dart';
 import 'package:myschool/main.dart';
 import 'package:myschool/user/HomePage.dart';
 import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/quickalert.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -13,6 +18,49 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   int _currentIndex = 0;
+  final AuthController _authController = AuthController();
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthentication();
+  }
+
+  _showLogoutDialog(BuildContext context) {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.confirm,
+      text: 'Do you want to logout?',
+      confirmBtnText: 'Yes',
+      cancelBtnText: 'No',
+      confirmBtnColor: Colors.green,
+      onConfirmBtnTap: () {
+        _logoutUser(context);
+        // Close the dialog
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  _logoutUser(BuildContext context) async {
+    await _authController.signOutUser();
+    showSnack(context, 'You have been logged out.');
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => BuyerRegisterScreen()),
+      (route) => false,
+    );
+  }
+
+  _checkAuthentication() async {
+    bool isAuthenticated = await _authController.isUserAuthenticated();
+    if (!isAuthenticated) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => BuyerRegisterScreen()),
+        (route) => false,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +80,14 @@ class _BottomBarState extends State<BottomBar> {
           });
         },
         items: [
-          Icon(Icons.home),
+          GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomBar()),
+                );
+              },
+              child: Icon(Icons.home)),
           Icon(Icons.favorite),
           Icon(Icons.info),
         ],

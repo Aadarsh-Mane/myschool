@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myschool/pages/YoutubePage.dart';
 import 'package:myschool/pages/home_page.dart';
+import 'package:myschool/pages/shared/Classes_info.dart';
 import 'package:myschool/pages/time_table_page.dart';
 
 class ButtonPage extends StatelessWidget {
@@ -11,42 +12,58 @@ class ButtonPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Button Page'),
+        backgroundColor: Colors.blue, // Customize app bar color
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => HomePage()));
               },
-              child: const Text('Announments'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+              child: const Text('Announcements'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Action for the second button
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => TimetablePage()));
               },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
               child: const Text('Time Table'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Action for the third button
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => YoutubePage()));
               },
-              child: const Text('Events '),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+              child: const Text('Events'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Action for the fourth button
               },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
               child: const Text('Notice'),
             ),
             const SizedBox(height: 20),
@@ -54,14 +71,23 @@ class ButtonPage extends StatelessWidget {
               onPressed: () {
                 // Action for the fifth button
               },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.purple, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
               child: const Text(''),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Action for the sixth button
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ClassInfoScreen()));
               },
-              child: const Text('Button 6'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.teal, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+              child: const Text('Add Homework/Assignment/Info'),
             ),
           ],
         ),
