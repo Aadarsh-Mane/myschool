@@ -3,11 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:myschool/pages/HomeWork.dart';
 import 'package:myschool/user/HomeWork/ClassEight.dart';
+import 'package:myschool/user/HomeWork/Econtent.dart';
 import 'package:myschool/user/HomeWork/HomeWorkSpecific.dart';
 import 'package:myschool/user/TimeTableScreen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 // class CollectionDataScreen extends StatelessWidget {
 //   final String collectionName;
@@ -53,7 +55,7 @@ class CollectionDataScreen extends StatelessWidget {
           collectionName: 'timetable',
         );
       case 'data':
-        return Collection2DataList(
+        return EcontenScreen(
           collectionName: 'timetable',
         );
       case 'nineth':
@@ -258,6 +260,502 @@ class _FadeInTextState extends State<FadeInText>
 //     );
 //   }
 // }
+// class Collection1DataList extends StatelessWidget {
+//   final String collectionName;
+
+//   const Collection1DataList({Key? key, required this.collectionName})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Column(
+//         children: [
+//           // Widget above the cards (Add something beautiful here)
+//           Container(
+//             height: 10,
+//             decoration: BoxDecoration(
+//               color: Color(0xFFF5EEE6),
+//               borderRadius: BorderRadius.only(
+//                 bottomRight: Radius.circular(100.0),
+//               ),
+//             ),
+//             // Add other widgets or content here
+//           ),
+//           Flexible(
+//             child: CardSwiper(
+//               cardsCount: 3, // Assuming you want to display 3 cards as in your example
+//               cardBuilder: (context, index, percentX, percentY) => Container(
+//                 alignment: Alignment.center,
+//                 child: Text((index + 1).toString()),
+//                 color: index == 0 ? Colors.blue : index == 1 ? Colors.red : Colors.purple,
+//               ),
+//             ),
+//           ),
+//           Expanded(
+//             child: Padding(
+//               padding: const EdgeInsets.only(top: 20.0),
+//               child: Container(
+//                 decoration: BoxDecoration(
+//                   color: Color(0xFFF5EEE6),
+//                   borderRadius: BorderRadius.only(
+//                     bottomRight: Radius.circular(100.0),
+//                   ),
+//                 ),
+//                 child: StreamBuilder<QuerySnapshot>(
+//                   stream: FirebaseFirestore.instance
+//                       .collection(collectionName)
+//                       .snapshots(),
+//                   builder: (context, snapshot) {
+//                     if (!snapshot.hasData) {
+//                       return Shimmer.fromColors(
+//                         period: Duration(seconds: 5),
+//                         baseColor: Colors.grey[300]!,
+//                         highlightColor: Colors.grey[100]!,
+//                         child: ListView.builder(
+//                           itemCount: 5,
+//                           itemBuilder: (context, index) {
+//                             return Container(
+//                               margin: EdgeInsets.symmetric(
+//                                 horizontal: 15,
+//                                 vertical: 10,
+//                               ),
+//                               decoration: BoxDecoration(
+//                                 color: Colors.white,
+//                                 borderRadius: BorderRadius.circular(20.0),
+//                                 boxShadow: [
+//                                   BoxShadow(
+//                                     color: Colors.grey.withOpacity(0.5),
+//                                     spreadRadius: 2,
+//                                     blurRadius: 10,
+//                                     offset: Offset(0, 3),
+//                                   ),
+//                                 ],
+//                               ),
+//                               child: Shimmer.fromColors(
+//                                 baseColor: Colors.grey[300]!,
+//                                 highlightColor: Colors.grey[100]!,
+//                                 child: Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Container(
+//                                       width: double.infinity,
+//                                       height: 20.0,
+//                                       color: Colors.white,
+//                                     ),
+//                                     SizedBox(height: 10),
+//                                     Container(
+//                                       width: double.infinity,
+//                                       height: 20.0,
+//                                       color: Colors.white,
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             );
+//                           },
+//                         ),
+//                       );
+//                     }
+
+//                     var documents = snapshot.data!.docs;
+//                     documents.sort((a, b) {
+//                       Timestamp timestampA =
+//                           (a.data() as Map<String, dynamic>)['timestamp'];
+//                       Timestamp timestampB =
+//                           (b.data() as Map<String, dynamic>)['timestamp'];
+//                       return timestampB.compareTo(timestampA);
+//                     });
+
+//                     return ListView.builder(
+//                       itemCount: documents.length,
+//                       itemBuilder: (context, index) {
+//                         var data =
+//                             documents[index].data() as Map<String, dynamic>;
+
+//                         var notes = data['note'];
+//                         var timestamp =
+//                             (data['timestamp'] as Timestamp).toDate();
+
+//                         return Hero(
+//                           tag: 'card$index',
+//                           child: Card(
+//                             elevation: 8,
+//                             margin: EdgeInsets.symmetric(
+//                               horizontal: 15,
+//                               vertical: 10,
+//                             ),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(20.0),
+//                             ),
+//                             child: InkWell(
+//                               onTap: () {
+//                                 // Add navigation or additional functionality here
+//                               },
+//                               child: Container(
+//                                 decoration: BoxDecoration(
+//                                   borderRadius: BorderRadius.circular(20.0),
+//                                   gradient: LinearGradient(
+//                                     begin: Alignment.topCenter,
+//                                     end: Alignment.bottomCenter,
+//                                     colors: [
+//                                       Color.fromARGB(
+//                                           255, 234, 195, 234), // Start color
+//                                       Color(
+//                                           0xFF97D9E1), // End color
+//                                     ],
+//                                   ),
+//                                 ),
+//                                 padding: EdgeInsets.all(15.0),
+//                                 child: Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     FadeInText(
+//                                       notes != null
+//                                           ? notes.toString()
+//                                           : 'No Notes Available',
+//                                       style: TextStyle(
+//                                         fontSize: 18,
+//                                         fontWeight: FontWeight.bold,
+//                                       ),
+//                                     ),
+//                                     SizedBox(height: 10),
+//                                     Text(
+//                                       'Date Created: ${DateFormat('dd-MM-yyyy ').format(timestamp)}',
+//                                       style: TextStyle(
+//                                         color: Colors.red,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class Collection1DataList extends StatelessWidget {
+//   final String collectionName;
+
+//   const Collection1DataList({Key? key, required this.collectionName})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Column(
+//         children: [
+//           // Widget above the cards (Add something beautiful here)
+//           Container(
+//             height: 10,
+//             decoration: BoxDecoration(
+//               color: Color(0xFFF5EEE6),
+//               borderRadius: BorderRadius.only(
+//                 bottomRight: Radius.circular(100.0),
+//               ),
+//             ),
+//             // Add other widgets or content here
+//           ),
+//           Flexible(
+//             child: StreamBuilder<QuerySnapshot>(
+//               stream: FirebaseFirestore.instance
+//                   .collection(collectionName)
+//                   .snapshots(),
+//               builder: (context, snapshot) {
+//                 if (!snapshot.hasData) {
+//                   return Shimmer.fromColors(
+//                     period: Duration(seconds: 3),
+//                     baseColor: Colors.grey[300]!,
+//                     highlightColor: Colors.grey[100]!,
+//                     child: Container(
+//                       color: Colors.white,
+//                       child: CardSwiper(
+//                         cardsCount: 3,
+//                         cardBuilder: (context, index, percentX, percentY) {
+//                           return Container(
+//                             margin: EdgeInsets.symmetric(
+//                                 horizontal: 15, vertical: 10),
+//                             decoration: BoxDecoration(
+//                               color: Colors.white,
+//                               borderRadius: BorderRadius.circular(20.0),
+//                               boxShadow: [
+//                                 BoxShadow(
+//                                   color: Colors.grey.withOpacity(0.5),
+//                                   spreadRadius: 2,
+//                                   blurRadius: 10,
+//                                   offset: Offset(0, 3),
+//                                 ),
+//                               ],
+//                             ),
+//                           );
+//                         },
+//                       ),
+//                     ),
+//                   );
+//                 }
+
+//                 var documents = snapshot.data!.docs;
+//                 documents.sort((a, b) {
+//                   Timestamp timestampA =
+//                       (a.data() as Map<String, dynamic>)['timestamp'];
+//                   Timestamp timestampB =
+//                       (b.data() as Map<String, dynamic>)['timestamp'];
+//                   return timestampB.compareTo(timestampA);
+//                 });
+
+//                 return CardSwiper(
+//                   cardsCount: documents.length,
+//                   cardBuilder: (context, index, percentX, percentY) {
+//                     var data = documents[index].data() as Map<String, dynamic>;
+//                     var notes = data['note'];
+//                     var timestamp = (data['timestamp'] as Timestamp).toDate();
+
+//                     return Container(
+//                       margin:
+//                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+//                       child: Card(
+//                         elevation: 8,
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(20.0),
+//                         ),
+//                         child: InkWell(
+//                           onTap: () {
+//                             // Add navigation or additional functionality here
+//                           },
+//                           child: Container(
+//                             decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.circular(20.0),
+//                               gradient: LinearGradient(
+//                                 begin: Alignment.topCenter,
+//                                 end: Alignment.bottomCenter,
+//                                 colors: [
+//                                   Color.fromARGB(
+//                                       255, 234, 195, 234), // Start color
+//                                   Color(0xFF97D9E1), // End color
+//                                 ],
+//                               ),
+//                             ),
+//                             padding: EdgeInsets.all(15.0),
+//                             child: Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 FadeInText(
+//                                   notes != null
+//                                       ? notes.toString()
+//                                       : 'No Notes Available',
+//                                   style: TextStyle(
+//                                     fontSize: 18,
+//                                     fontWeight: FontWeight.bold,
+//                                   ),
+//                                 ),
+//                                 SizedBox(height: 10),
+//                                 Text(
+//                                   'Date Created: ${DateFormat('dd-MM-yyyy ').format(timestamp)}',
+//                                   style: TextStyle(
+//                                     color: Colors.red,
+//                                   ),
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                 );
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class Collection1DataList extends StatelessWidget {
+//   final String collectionName;
+
+//   const Collection1DataList({Key? key, required this.collectionName})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Color(0xFFF5EEE6),
+//       body: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           // Widget above the cards (Add something beautiful here)
+//           Container(
+//             height: 10,
+//             decoration: BoxDecoration(
+//               color: Color(0xFFF5EEE6),
+//               borderRadius: BorderRadius.only(
+//                 bottomRight: Radius.circular(100.0),
+//               ),
+//             ),
+//             // Add other widgets or content here
+//           ),
+//           Expanded(
+//             child: Center(
+//               child: StreamBuilder<QuerySnapshot>(
+//                 stream: FirebaseFirestore.instance
+//                     .collection(collectionName)
+//                     .snapshots(),
+//                 builder: (context, snapshot) {
+//                   if (!snapshot.hasData) {
+//                     return Shimmer.fromColors(
+//                       period: Duration(seconds: 3),
+//                       baseColor: Colors.grey[300]!,
+//                       highlightColor: Colors.grey[100]!,
+//                       child: Container(
+//                         color: Colors.white,
+//                         width: MediaQuery.of(context).size.width - 30,
+//                         child: ListView.builder(
+//                           itemCount: 3,
+//                           itemBuilder: (context, index) {
+//                             return Padding(
+//                               padding: EdgeInsets.symmetric(
+//                                 horizontal: 15,
+//                                 vertical: 10,
+//                               ),
+//                               child: Container(
+//                                 decoration: BoxDecoration(
+//                                   color: Colors.white,
+//                                   borderRadius: BorderRadius.circular(20.0),
+//                                   boxShadow: [
+//                                     BoxShadow(
+//                                       color: Colors.grey.withOpacity(0.5),
+//                                       spreadRadius: 2,
+//                                       blurRadius: 10,
+//                                       offset: Offset(0, 3),
+//                                     ),
+//                                   ],
+//                                 ),
+//                                 width: MediaQuery.of(context).size.width - 30,
+//                                 height: 200,
+//                                 child: Center(
+//                                   child: CircularProgressIndicator(),
+//                                 ),
+//                               ),
+//                             );
+//                           },
+//                         ),
+//                       ),
+//                     );
+//                   }
+
+//                   var documents = snapshot.data!.docs;
+//                   documents.sort((a, b) {
+//                     Timestamp timestampA =
+//                         (a.data() as Map<String, dynamic>)['timestamp'];
+//                     Timestamp timestampB =
+//                         (b.data() as Map<String, dynamic>)['timestamp'];
+//                     return timestampB.compareTo(timestampA);
+//                   });
+
+//                   return Container(
+//                     width: MediaQuery.of(context).size.width - 30,
+//                     child: ListView.builder(
+//                       itemCount: documents.length,
+//                       itemBuilder: (context, index) {
+//                         var data =
+//                             documents[index].data() as Map<String, dynamic>;
+//                         var notes = data['note'];
+//                         var timestamp =
+//                             (data['timestamp'] as Timestamp).toDate();
+
+//                         return Padding(
+//                           padding: EdgeInsets.symmetric(
+//                             horizontal: 15,
+//                             vertical: 10,
+//                           ),
+//                           child: Container(
+//                             decoration: BoxDecoration(
+//                               color: Colors.white,
+//                               borderRadius: BorderRadius.circular(20.0),
+//                               boxShadow: [
+//                                 BoxShadow(
+//                                   color: Colors.grey.withOpacity(0.5),
+//                                   spreadRadius: 2,
+//                                   blurRadius: 10,
+//                                   offset: Offset(0, 3),
+//                                 ),
+//                               ],
+//                             ),
+//                             child: ClipRRect(
+//                               borderRadius: BorderRadius.circular(20.0),
+//                               child: Card(
+//                                 elevation: 0, // No elevation for inner card
+//                                 child: InkWell(
+//                                   onTap: () {
+//                                     // Add navigation or additional functionality here
+//                                   },
+//                                   child: Container(
+//                                     decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(20.0),
+//                                       gradient: LinearGradient(
+//                                         begin: Alignment.topCenter,
+//                                         end: Alignment.bottomCenter,
+//                                         colors: [
+//                                           Color.fromARGB(255, 234, 195,
+//                                               234), // Start color
+//                                           Color(0xFF97D9E1), // End color
+//                                         ],
+//                                       ),
+//                                     ),
+//                                     padding: EdgeInsets.all(15.0),
+//                                     child: Column(
+//                                       crossAxisAlignment:
+//                                           CrossAxisAlignment.start,
+//                                       children: [
+//                                         FadeInText(
+//                                           notes != null
+//                                               ? notes.toString()
+//                                               : 'No Notes Available',
+//                                           style: TextStyle(
+//                                             fontSize: 18,
+//                                             fontWeight: FontWeight.bold,
+//                                           ),
+//                                         ),
+//                                         SizedBox(height: 10),
+//                                         Text(
+//                                           'Date Created: ${DateFormat('dd-MM-yyyy ').format(timestamp)}',
+//                                           style: TextStyle(
+//                                             color: Colors.red,
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                     ),
+//                   );
+//                 },
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 class Collection1DataList extends StatelessWidget {
   final String collectionName;
 
@@ -266,32 +764,36 @@ class Collection1DataList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      color: Color(0xFFF5EEE6),
-      child: Column(
-        children: [
-          // Widget above the cards (Add something beautiful here)
-          Container(
-            height: 10,
-            decoration: BoxDecoration(
-              color: Color(0xFFF5EEE6),
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(100.0),
-              ),
-            ),
-            // Add other widgets or content here
+    return Scaffold(
+      backgroundColor:
+          Colors.transparent, // Set scaffold background to transparent
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+                'assets/images/logot.png'), // Replace with your image
+            fit: BoxFit.contain,
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFF5EEE6),
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(100.0),
-                  ),
+          border: Border.all(
+              color: const Color.fromARGB(255, 207, 69, 69),
+              width: 2.0), // Border around the screen
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Widget above the cards (Add something beautiful here)
+            Container(
+              height: 10,
+              decoration: BoxDecoration(
+                color: Color(0xFFF5EEE6),
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(100.0),
                 ),
+              ),
+              // Add other widgets or content here
+            ),
+            Expanded(
+              child: Center(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection(collectionName)
@@ -299,53 +801,42 @@ class Collection1DataList extends StatelessWidget {
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Shimmer.fromColors(
-                        period:
-                            Duration(seconds: 5), // Set the shimmer duration
-
+                        period: Duration(seconds: 3),
                         baseColor: Colors.grey[300]!,
                         highlightColor: Colors.grey[100]!,
-                        child: ListView.builder(
-                          itemCount: 5, // Number of shimmer items
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.grey[100]!,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      height: 20.0,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 20.0,
-                                      color: Colors.white,
-                                    ),
-                                  ],
+                        child: Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width - 30,
+                          child: ListView.builder(
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 10,
                                 ),
-                              ),
-                            );
-                          },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 10,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  width: MediaQuery.of(context).size.width - 30,
+                                  height: 200,
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       );
                     }
@@ -360,69 +851,80 @@ class Collection1DataList extends StatelessWidget {
                     });
 
                     return Container(
+                      width: MediaQuery.of(context).size.width - 30,
                       child: ListView.builder(
                         itemCount: documents.length,
                         itemBuilder: (context, index) {
                           var data =
                               documents[index].data() as Map<String, dynamic>;
-
                           var notes = data['note'];
                           var timestamp =
                               (data['timestamp'] as Timestamp).toDate();
 
-                          return Hero(
-                            tag: 'card$index',
-                            child: Card(
-                              // color: Colors.red,
-                              elevation: 8,
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 10,
-                              ),
-                              shape: RoundedRectangleBorder(
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  // Add navigation or additional functionality here
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Color.fromARGB(
-                                            255, 234, 195, 234), // Start color
-                                        Color(
-                                            0xFF97D9E1), // End color, // End color
-                                      ], // Example gradient colors
-                                    ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 3),
                                   ),
-                                  padding: EdgeInsets.all(15.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      FadeInText(
-                                        notes != null
-                                            ? notes.toString()
-                                            : 'No Notes Available',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Card(
+                                  elevation: 0, // No elevation for inner card
+                                  child: InkWell(
+                                    onTap: () {
+                                      // Add navigation or additional functionality here
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Color(0xFFD3CCE3), // Light Purple
+                                            Color(
+                                                0xFFE9E4F0), // Orange// End color
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Date Created: ${DateFormat('dd-MM-yyyy ').format(timestamp)}',
-                                        style: TextStyle(
-                                          color:
-                                              Colors.red, // Change color here
-                                        ),
+                                      padding: EdgeInsets.all(15.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          FadeInText(
+                                            notes != null
+                                                ? notes.toString()
+                                                : 'No Notes Available',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            'Date Created: ${DateFormat('dd-MM-yyyy ').format(timestamp)}',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -435,179 +937,8 @@ class Collection1DataList extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Collection2DataList extends StatelessWidget {
-  final String collectionName;
-
-  const Collection2DataList({Key? key, required this.collectionName})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('data').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return ShimmerList(); // Display shimmer while data is loading
-        }
-
-        var documents = snapshot.data!.docs;
-        return ListView.builder(
-          itemCount: documents.length,
-          itemBuilder: (context, index) {
-            var data = documents[index].data() as Map<String, dynamic>;
-
-            // Extracting fields from data
-            var title = data['title'];
-            var description = data['description'];
-            var timestamp =
-                data['timestamp']; // Assuming timestamp is stored as a field
-            var imageUrl =
-                data['image']; // Assuming image URL is stored as a field
-            var option = data['option']; // Assuming option is stored as a field
-            var dateTime = timestamp.toDate();
-
-            // Customize how you want to display your data here
-            return GestureDetector(
-              onTap: () {
-                // Open a new screen or dialog to display the image with zoom
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ImageZoomScreen(imageUrl: imageUrl),
-                  ),
-                );
-              },
-              child: Card(
-                elevation: 3,
-                margin: EdgeInsets.all(8),
-                child: Stack(
-                  children: [
-                    ListTile(
-                      title:
-                          Text(title != null ? title.toString() : 'No Title'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(description != null
-                              ? description.toString()
-                              : 'No Description'),
-                          Text(timestamp != null
-                              ? 'Date : ${DateFormat('dd-MM-yyyy ').format(dateTime).toString()}'
-                              : 'No Timestamp'),
-                        ],
-                      ),
-                      leading: imageUrl != null
-                          ? Image.network(
-                              imageUrl.toString(),
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(),
-                      // Add more widgets based on your data structure
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          option != null ? option.toString() : '',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class ShimmerList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: ListView.builder(
-        itemCount: 5, // You can adjust the number of shimmer items
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 3,
-            margin: EdgeInsets.all(8),
-            child: ListTile(
-              title: Container(
-                width: double.infinity,
-                height: 16.0,
-                color: Colors.white,
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 200.0,
-                    height: 12.0,
-                    color: Colors.white,
-                  ),
-                  Container(
-                    width: 100.0,
-                    height: 12.0,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-              leading: Container(
-                width: 50.0,
-                height: 50.0,
-                color: Colors.white,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class ImageZoomScreen extends StatelessWidget {
-  final String? imageUrl;
-
-  const ImageZoomScreen({Key? key, this.imageUrl}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Zoomed Image'),
-      ),
-      body: PhotoViewGallery.builder(
-        itemCount: 1,
-        builder: (context, index) {
-          return PhotoViewGalleryPageOptions(
-            imageProvider: NetworkImage(imageUrl!),
-            minScale: PhotoViewComputedScale.contained,
-            maxScale: PhotoViewComputedScale.covered * 2,
-          );
-        },
-        scrollPhysics: BouncingScrollPhysics(),
-        backgroundDecoration: BoxDecoration(
-          color: Colors.black,
+          ],
         ),
-        pageController: PageController(),
       ),
     );
   }

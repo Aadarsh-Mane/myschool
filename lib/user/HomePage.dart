@@ -87,15 +87,15 @@ class _UserHomePageState extends State<UserHomePage> {
                           .textTheme
                           .headlineSmall
                           ?.copyWith(color: Colors.cyan)),
-                  subtitle: Text('Welcome to MySchool',
+                  subtitle: Text('Welcome to HORIZON',
                       style: Theme.of(context)
                           .textTheme
                           .titleMedium
                           ?.copyWith(color: Colors.cyan[300])),
                   trailing: const CircleAvatar(
+                    backgroundColor: Colors.white,
                     radius: 30,
-                    backgroundImage: NetworkImage(
-                        'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'),
+                    backgroundImage: AssetImage('assets/images/logot.png'),
                   ),
                 ),
                 const SizedBox(height: 30)

@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
       // home:Bott
       // home: YoutubeListPage(),
       // home: NineClass(),
-      // home: BottomBar()
+      //  home: BottomBar()
       // home: BiometricRegistrationScreen()
       // home: AddDocumentPage()
       // home: B()
@@ -67,12 +67,12 @@ class MyApp extends StatelessWidget {
       // home: GoogleAuthScreen()
       // home: AboutUsScreen(),
       // home: UserChatScreen()
-      home: const BottomBar(),
+      // home: const BottomBar(),
       // home: MeaningScreen1()
       // home: TimeTableScreen(),
       // home: const ButtonPage(),
       // home: CreatSheetPage()
-      // home: const ConcentricTransitionPage(),
+      home: const ConcentricTransitionPage(),
       // home: UserCalendarScreen()
       // home: UserCalendarScreen()
       // home: HomeWork()

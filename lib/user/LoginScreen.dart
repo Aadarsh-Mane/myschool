@@ -80,6 +80,15 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                CircleAvatar(
+                  backgroundColor:
+                      Colors.transparent, // Set background color to transparent
+
+                  radius: 120, // Adjust the radius as needed
+                  backgroundImage: AssetImage(
+                      'assets/images/logot.png'), // Path to your logo
+                ),
+                SizedBox(height: 20),
                 _buildTextField('Enter Email', (value) {
                   email = value;
                 }),

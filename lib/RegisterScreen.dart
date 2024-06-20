@@ -110,6 +110,12 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 100, // Adjust the radius as needed
+                    backgroundImage: AssetImage(
+                        'assets/images/logot.png'), // Path to your logo
+                  ),
                   _buildTextField('Enter Email', (value) {
                     email = value;
                   }),
