@@ -1,10 +1,11 @@
-import 'package:concentric_transition/concentric_transition.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:concentric_transition/page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/RegisterScreen.dart';
+import 'package:myschool/controllers/AuthScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 
 class ConcentricTransitionPage extends StatefulWidget {
   const ConcentricTransitionPage({Key? key}) : super(key: key);
@@ -39,11 +40,49 @@ class _ConcentricTransitionPageState extends State<ConcentricTransitionPage> {
     ),
   ];
 
+  // SharedPreferences instance for persistent storage
+  late SharedPreferences _prefs;
+  bool _showIntro = true; // Flag to determine if intro should be shown
+  bool _isLoggedIn = false; // Flag to determine if user is logged in
+
+  @override
+  void initState() {
+    super.initState();
+    _initPrefs();
+    _checkAuthStatus();
+  }
+
+  // Initialize SharedPreferences
+  void _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    _showIntro =
+        _prefs.getBool('show_intro') ?? true; // Check if show_intro is set
+    setState(() {}); // Update the state to reflect changes
+  }
+
+  // Check authentication status using AuthController
+  Future<void> _checkAuthStatus() async {
+    AuthController authController = AuthController();
+    _isLoggedIn = await authController.isUserAuthenticated();
+    setState(() {}); // Update the state to reflect changes
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_isLoggedIn) {
+      // If logged in, navigate to main content
+      return BottomBar();
+    } else {
+      // Otherwise, show intro screen
+      return _showIntro ? _buildIntroScreen() : BuyerRegisterScreen();
+    }
+  }
+
+  Widget _buildIntroScreen() {
     return SafeArea(
       child: Scaffold(
         body: ConcentricPageView(
+          // Your existing ConcentricPageView setup
           onChange: (val) {},
           colors: const <Color>[
             Color.fromARGB(255, 249, 153, 198),
@@ -53,16 +92,18 @@ class _ConcentricTransitionPageState extends State<ConcentricTransitionPage> {
           ],
           itemCount: concentrics.length,
           onFinish: () {
+            _prefs.setBool(
+                'show_intro', false); // Set show_intro to false once finished
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (context) => BuyerRegisterScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => BuyerRegisterScreen()),
             );
           },
           itemBuilder: (int index) {
             return Column(
               children: [
+                // Your existing widget structure
+                // Ensure to replace with your existing UI code
                 Align(
                   alignment: Alignment.topRight,
                   child: Padding(

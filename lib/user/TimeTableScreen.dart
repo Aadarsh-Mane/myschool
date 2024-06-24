@@ -82,7 +82,7 @@ class CollectionDataList extends StatelessWidget {
               var data = document.data() as Map<String, dynamic>;
 
               // Check if 'url' key is present and non-null
-              var url = data['url'];
+              var url = data['pdf'];
               var urlText = url != null ? url.toString() : '';
 
               return OpenContainer(

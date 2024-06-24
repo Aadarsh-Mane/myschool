@@ -4,53 +4,85 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class TimetablePage extends StatelessWidget {
   const TimetablePage({Key? key}) : super(key: key);
 
-  Future<void> uploadFile(String column) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
+  Future<void> uploadFile(BuildContext context) async {
+    TextEditingController classNameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('Upload Timetable'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: classNameController,
+              decoration: InputDecoration(labelText: 'Class Name'),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                String className = classNameController.text.trim();
+                if (className.isNotEmpty) {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: ['pdf'],
+                  );
+
+                  if (result != null) {
+                    File file = File(result.files.single.path!);
+                    String fileName =
+                        '${DateTime.now().millisecondsSinceEpoch}_$className.pdf';
+                    Reference ref = FirebaseStorage.instance
+                        .ref()
+                        .child('timetable/$fileName');
+                    UploadTask uploadTask = ref.putFile(file);
+
+                    await uploadTask.whenComplete(() async {
+                      String downloadUrl = await ref.getDownloadURL();
+                      await FirebaseFirestore.instance
+                          .collection('timetable')
+                          .doc(className)
+                          .set({'pdf': downloadUrl});
+                    });
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Please enter a class name')),
+                  );
+                }
+              },
+              child: Text('Upload PDF'),
+            ),
+          ],
+        ),
+      ),
     );
-
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      String fileName = '${DateTime.now().millisecondsSinceEpoch}_$column.pdf';
-      Reference ref =
-          FirebaseStorage.instance.ref().child('timetable/$fileName');
-      UploadTask uploadTask = ref.putFile(file);
-
-      await uploadTask.whenComplete(() async {
-        String downloadUrl = await ref.getDownloadURL();
-        await FirebaseFirestore.instance
-            .collection('timetable')
-            .doc(column)
-            .set({'url': downloadUrl});
-      });
-    }
   }
 
-  Future<void> deleteDocument(String column, String documentId) async {
-    // Get reference to the document
-    DocumentReference docRef =
-        FirebaseFirestore.instance.collection('timetable').doc(column);
+  Future<void> deleteDocument(String className, String documentId) async {
+    try {
+      DocumentReference docRef =
+          FirebaseFirestore.instance.collection('timetable').doc(className);
+      DocumentSnapshot snapshot = await docRef.get();
 
-    // Fetch the document snapshot
-    DocumentSnapshot snapshot = await docRef.get();
+      if (snapshot.exists) {
+        String? downloadUrl = snapshot.get('pdf');
+        await docRef.delete();
 
-    // Check if the document exists
-    if (snapshot.exists) {
-      // Get the URL from the document data
-      String? downloadUrl = snapshot.get('url');
-
-      // Delete the document from Firestore
-      await docRef.delete();
-
-      // Delete the corresponding file from Firebase Storage
-      if (downloadUrl != null) {
-        Reference ref = FirebaseStorage.instance.refFromURL(downloadUrl);
-        await ref.delete();
+        if (downloadUrl != null) {
+          Reference ref = FirebaseStorage.instance.refFromURL(downloadUrl);
+          await ref.delete();
+        }
       }
+    } catch (e) {
+      print('Error deleting document: $e');
     }
   }
 
@@ -63,18 +95,13 @@ class TimetablePage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ElevatedButton(
               onPressed: () {
-                uploadFile('column1');
+                uploadFile(context);
               },
-              child: const Text('Upload PDF 1'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                uploadFile('column2');
-              },
-              child: const Text('Upload PDF 2'),
+              child: const Text('Upload Timetable PDF'),
             ),
             const SizedBox(height: 20),
             StreamBuilder<QuerySnapshot>(
@@ -93,19 +120,12 @@ class TimetablePage extends StatelessWidget {
 
                 List<QueryDocumentSnapshot> data = snapshot.data!.docs;
 
-                // Print out document information for debugging
-                data.forEach((doc) {
-                  print('Document ID: ${doc.id}, URL: ${doc['url']}');
-                });
-
-                print('Number of documents: ${data.length}');
-
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     columns: const [
-                      DataColumn(label: Text('Column')),
-                      DataColumn(label: Text('PDF URL')),
+                      DataColumn(label: Text('Class Name')),
+                      DataColumn(label: Text('Timetable PDF')),
                       DataColumn(label: Text('Actions')),
                     ],
                     rows: data
@@ -114,7 +134,19 @@ class TimetablePage extends StatelessWidget {
                             cells: [
                               DataCell(Text(document.id)),
                               DataCell(
-                                InkWell(child: Text(document['url'] ?? '')),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    String? pdfUrl = document['pdf'] as String?;
+                                    if (pdfUrl != null) {
+                                      if (await canLaunch(pdfUrl)) {
+                                        await launch(pdfUrl);
+                                      } else {
+                                        throw 'Could not launch $pdfUrl';
+                                      }
+                                    }
+                                  },
+                                  child: Text('Open Timetable'),
+                                ),
                               ),
                               DataCell(
                                 IconButton(
