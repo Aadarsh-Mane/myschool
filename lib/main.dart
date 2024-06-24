@@ -86,8 +86,8 @@ class MyApp extends StatelessWidget {
         // home: const ConcentricTransitionPage(),
 
         // home: NotificationScreen()
-        // home: BuyerRegisterScreen()
-        home: ButtonPage()
+        home: BuyerRegisterScreen()
+        // home: ButtonPage()
         // home: NotificationScreen()
         // home: UserCalendarScreen()
         // home: UserCalendarScreen()
