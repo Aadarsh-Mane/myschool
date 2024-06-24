@@ -44,7 +44,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await UserSheetsApi.init();
-  // await FirebaseApi().initNotification();
+  await FirebaseApi().initNotification();
   runApp(const MyApp());
 }
 
