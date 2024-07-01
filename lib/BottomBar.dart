@@ -155,22 +155,41 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ],
                   image: DecorationImage(
-                    image: NetworkImage(
-                      'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg',
+                    image: AssetImage(
+                      'assets/images/head.jpeg',
                     ),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               SizedBox(height: 16),
+              // Person's Name and Position
+              Text(
+                'Director', // Replace with the actual position
+                style: TextStyle(
+                  fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                  color: const Color.fromARGB(255, 166, 57, 57),
+                ),
+              ),
+              Text(
+                'Smt.  Sulbha Uttam Kamble', // Replace with the actual name
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 4),
+              SizedBox(height: 16),
               // General Information
-              _buildInfoItem('School Name', 'XYZ School'),
-              _buildInfoItem('Location', 'City, Country'),
+              _buildInfoItem('School Name', 'The Horizon School'),
+              _buildInfoItem('Location', 'Lodha Heaven,Dombivli'),
               _buildInfoItem('Founded', '2000'),
               _buildInfoItem('Accreditation', 'Accredited'),
               SizedBox(height: 16),
               // Head of School
-              _buildSectionTitle('Head of School'),
+              // _buildSectionTitle('Principal'),
               ListTile(
                 contentPadding: EdgeInsets.only(top: 10, left: 55),
                 leading: CircleAvatar(
@@ -180,7 +199,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 title: Text(
-                  'John Doe',
+                  'Smt Sonali Sakpal',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

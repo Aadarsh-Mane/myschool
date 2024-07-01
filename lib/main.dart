@@ -32,6 +32,8 @@ import 'package:myschool/pages/e-content/econtent_page.dart';
 import 'package:myschool/pages/home_page.dart';
 import 'package:myschool/pages/shared/my_page_button.dart';
 import 'package:myschool/pages/time_table_page.dart';
+import 'package:myschool/providers/ChatProvider.dart';
+import 'package:myschool/providers/UserProvider.dart';
 import 'package:myschool/user/CalenderEvent.dart';
 import 'package:myschool/user/HomePage.dart';
 import 'package:myschool/user/HomeWork/ClassEight.dart';
@@ -39,13 +41,21 @@ import 'package:myschool/user/HomeWork/DashboardScreen.dart';
 import 'package:myschool/user/MeetingScreen.dart';
 import 'package:myschool/user/TimeTableScreen.dart';
 import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await UserSheetsApi.init();
   await FirebaseApi().initNotification();
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(
+          create: (_) => ChatProvider()), // Add ChatProvider here
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -55,49 +65,49 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: Color.fromARGB(255, 152, 208, 212)),
-          useMaterial3: true,
-        ),
-        // home: const ButtonPage(),
-        // home:Bott
-        // home: YoutubeListPage(),
-        // home: NineClass(),
-        //  home: BottomBar()
-        // home: BiometricRegistrationScreen()
-        // home: AddDocumentPage()
-        // home: B()
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 152, 208, 212)),
+        useMaterial3: true,
+      ),
+      // home: const ButtonPage(),
+      // home:Bott
+      // home: YoutubeListPage(),
+      // home: NineClass(),
+      //  home: BottomBar()
+      // home: BiometricRegistrationScreen()
+      // home: AddDocumentPage()
+      // home: B()
 
-        // home: GoogleAuthScreen()
-        // home: AboutUsScreen(),
-        // home: UserChatScreen()
-        // home: const BottomBar(),
-        // home: MeaningScreen1()
-        // home: TimeTableScreen(),
-        // home: const ButtonPage(),
-        // home: CreatSheetPage()
-        // home: SendNotificationScreen(),
-        // home: MeetingScreen()
-        // home: CrudScreen()
-        // home: AdminRespect()
-        // home: TimetablePage()
-        // home: const ConcentricTransitionPage(),
+      // home: GoogleAuthScreen()
+      // home: AboutUsScreen(),
+      // home: UserChatScreen()
+      // home: const BottomBar(),
+      // home: MeaningScreen1()
+      // home: TimeTableScreen(),
+      // home: const ButtonPage(),
+      // home: CreatSheetPage()
+      // home: SendNotificationScreen(),
+      // home: MeetingScreen()
+      // home: CrudScreen()
+      // home: AdminRespect()
+      // home: TimetablePage()
+      home: const ConcentricTransitionPage(),
 
-        // home: NotificationScreen()
-        home: BuyerRegisterScreen()
-        // home: ButtonPage()
-        // home: NotificationScreen()
-        // home: UserCalendarScreen()
-        // home: UserCalendarScreen()
-        // home: HomeWork()
-        // home: UserHomePage(),
-        //  home: AuthScreen(),
-        // home: SignUpScreen(),
-        // home: BuyerRegisterScreen()
-        // home: YoutubeListPage(),
-        );
+      // home: NotificationScreen()
+      // home: BuyerRegisterScreen()
+      // home: ButtonPage()
+      // home: NotificationScreen()
+      // home: UserCalendarScreen()
+      // home: UserCalendarScreen()
+      // home: HomeWork()
+      // home: UserHomePage(),
+      //  home: AuthScreen(),
+      // home: SignUpScreen(),
+      // home: BuyerRegisterScreen()
+      // home: YoutubeListPage(),
+    );
   }
 }
 

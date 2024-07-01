@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/ChatBot.dart';
 import 'package:myschool/pages/shared/my_page_button.dart';
+import 'package:myschool/providers/UserProvider.dart';
 import 'package:myschool/user/CollectionScreen.dart';
 import 'package:myschool/user/YoutubeWatchScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({super.key});
@@ -17,7 +19,6 @@ class UserHomePage extends StatefulWidget {
 class _UserHomePageState extends State<UserHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  late String _userName = ''; // State variable to hold the user's name
 
   List<String> collectionNames = [
     'notes',
@@ -25,27 +26,31 @@ class _UserHomePageState extends State<UserHomePage> {
     'data',
     'events',
     'ninea',
-    // 'homie'
   ]; // Add more collection names as needed
   Map<String, int> notificationCounts = {};
 
   @override
   void initState() {
     super.initState();
-    getUserFullName();
+    _fetchUserInfo();
     updateNotificationCounts();
   }
 
-  Future<void> getUserFullName() async {
+  Future<void> _fetchUserInfo() async {
     try {
       String uid = _auth.currentUser!.uid;
       DocumentSnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('buyers').doc(uid).get();
+          await _firestore.collection('users').doc(uid).get();
 
-      setState(() {
-        _userName =
-            snapshot['fullName']; // Update _userName with the user's full name
-      });
+      if (snapshot.exists) {
+        // Get full name and image URL from Firestore
+        String fullName = snapshot['fullName'];
+        String imageUrl = snapshot['imageUrl'];
+
+        // Update the UserProvider
+        Provider.of<UserProvider>(context, listen: false)
+            .setUserInfo(fullName, imageUrl);
+      }
     } catch (e) {
       print('Error fetching user information: $e');
     }
@@ -64,6 +69,8 @@ class _UserHomePageState extends State<UserHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -83,7 +90,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 30),
                       title: Text(
-                        'Hello, $_userName!',
+                        'Hello, ${userProvider.fullName}!',
                         style: Theme.of(context)
                             .textTheme
                             .headlineSmall
@@ -96,10 +103,13 @@ class _UserHomePageState extends State<UserHomePage> {
                             .titleMedium
                             ?.copyWith(color: Colors.cyan[300]),
                       ),
-                      trailing: const CircleAvatar(
+                      trailing: CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 30,
-                        backgroundImage: AssetImage('assets/images/logot.png'),
+                        backgroundImage: userProvider.imageUrl.isNotEmpty
+                            ? NetworkImage(userProvider.imageUrl)
+                            : AssetImage('assets/images/logot.png')
+                                as ImageProvider,
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -111,6 +121,8 @@ class _UserHomePageState extends State<UserHomePage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/logot.png')),
                     color: Colors.white,
                     borderRadius:
                         BorderRadius.only(topLeft: Radius.circular(200)),
@@ -132,7 +144,6 @@ class _UserHomePageState extends State<UserHomePage> {
                           'Announcement', Icons.chat, Colors.brown, 'notes'),
                       itemDashboard(
                           'E-content', Icons.article, Colors.blue, 'data'),
-                      // Add more items as needed
                     ],
                   ),
                 ),
@@ -140,7 +151,6 @@ class _UserHomePageState extends State<UserHomePage> {
               const SizedBox(height: 20),
             ],
           ),
-          // Admin Login and Chat buttons
           Positioned(
             bottom: 20,
             right: 20,
@@ -163,7 +173,7 @@ class _UserHomePageState extends State<UserHomePage> {
                   onPressed: () {
                     Navigator.of(context).push(
                         PageRouteBuilder(pageBuilder: (context, animation, _) {
-                      return MyChatScreen();
+                      return MyMyMyChatScreen();
                     }));
                   },
                   child: Icon(Icons.add, color: Colors.blue),

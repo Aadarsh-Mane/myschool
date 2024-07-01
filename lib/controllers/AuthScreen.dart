@@ -1,13 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
+import 'dart:io';
+
+import 'package:share_plus/share_plus.dart';
+
+class UserAlreadyExistsException implements Exception {
+  final String message;
+  UserAlreadyExistsException(this.message);
+}
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // Check if the user is currently authenticated
   Future<bool> isUserAuthenticated() async {
     try {
       User? user = _auth.currentUser;
@@ -18,24 +26,45 @@ class AuthController {
     }
   }
 
-  // Sign up a new user with the provided details
-  Future<String> signUpUSers(String email, String fullName, String phoneNumber,
-      String password) async {
+  Future<String> uploadImageToStorage(XFile image) async {
+    try {
+      String fileName = basename(image.path);
+      Reference storageReference =
+          _storage.ref().child('user_images/$fileName');
+      UploadTask uploadTask = storageReference.putFile(File(image.path));
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print("Error uploading image: $e");
+      return '';
+    }
+  }
+
+  Future<String> signUpUsers(String email, String fullName, String phoneNumber,
+      String password, String userType, String imageUrl) async {
     try {
       if (email.isNotEmpty &&
           fullName.isNotEmpty &&
           phoneNumber.isNotEmpty &&
           password.isNotEmpty) {
-        // Create the user with email and password
+        final List<String> signInMethods =
+            await _auth.fetchSignInMethodsForEmail(email);
+        if (signInMethods.isNotEmpty) {
+          throw UserAlreadyExistsException(
+              'User with this email already exists.');
+        }
+
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
 
-        // Save additional user details to Firestore
-        await _firestore.collection('buyers').doc(cred.user!.uid).set({
+        await _firestore.collection('users').doc(cred.user!.uid).set({
           'email': email,
           'fullName': fullName,
           'phoneNumber': phoneNumber,
-          'buyerId': cred.user!.uid,
+          'userId': cred.user!.uid,
+          'userType': userType,
+          'imageUrl': imageUrl, // Save the image URL
           'address': '', // Initially set as empty
         });
 
@@ -44,12 +73,19 @@ class AuthController {
         return 'Please fill in all fields';
       }
     } catch (e) {
-      print("Error signing up: $e");
-      return 'Error occurred during sign up';
+      if (e is FirebaseAuthException) {
+        print("Firebase error signing up: ${e.message}");
+        return 'Firebase error occurred during sign up';
+      } else if (e is UserAlreadyExistsException) {
+        print(e.message);
+        return e.message;
+      } else {
+        print("Error signing up: $e");
+        return 'Error occurred during sign up';
+      }
     }
   }
 
-  // Log in a user with the provided email and password
   Future<String> loginUsers(String email, String password) async {
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
@@ -65,7 +101,6 @@ class AuthController {
     }
   }
 
-  // Sign out the currently authenticated user
   Future<void> signOutUser() async {
     try {
       await _auth.signOut();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myschool/RegisterScreen.dart';
+import 'package:myschool/pages/CalenderEvent.dart';
 import 'package:myschool/pages/YoutubePage.dart';
 import 'package:myschool/pages/home_page.dart';
 import 'package:myschool/pages/shared/Classes_info.dart';
@@ -72,6 +73,19 @@ class _ButtonPageState extends State<ButtonPage> {
               ),
               child: const Text('Announcements'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EventCalendarScreen()));
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+              child: const Text('calendar'),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -94,7 +108,7 @@ class _ButtonPageState extends State<ButtonPage> {
                 primary: Colors.red, // Button color
                 onPrimary: Colors.white, // Text color
               ),
-              child: const Text('Events'),
+              child: const Text('Youtube link'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

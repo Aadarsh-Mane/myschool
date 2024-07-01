@@ -81,6 +81,7 @@ dependencies:
   qr_flutter: ^4.1.0
   qr_code_scanner: ^1.0.1
   neumorphic_button: ^0.0.1+2
+  image_cropper: ^5.0.1
   
 
 dev_dependencies:

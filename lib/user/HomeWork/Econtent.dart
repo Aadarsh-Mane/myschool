@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart'; // For loading spinner
 
@@ -151,6 +152,27 @@ class EcontenScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10), // Add some spacing
+                            // Share Button
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  // Share the title and half the description
+                                  String shareText =
+                                      "${title.toString()} - ${description.toString().substring(0, (description.length / 2).round())}...\nDownload the app to see more!";
+                                  Share.share(shareText);
+                                },
+                                icon: Icon(Icons.share), // Share icon
+                                label: Text('Share'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // Button color
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                               ),
