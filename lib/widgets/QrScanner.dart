@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myschool/admin/AdminScreen.dart';
+import 'package:myschool/views/admin/AdminScreen.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
