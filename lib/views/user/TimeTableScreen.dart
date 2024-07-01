@@ -17,10 +17,6 @@ class TimeTableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Collection Data - $collectionName'),
-      //   backgroundColor: Color(0xFF7A9E9F),
-      // ),
       body: CollectionDataList(collectionName: collectionName),
     );
   }
@@ -61,7 +57,7 @@ class CollectionDataList extends StatelessWidget {
 
           var documents = snapshot.data!.docs;
 
-          // Sort documents based on timestamp, default to DateTime.now() if timestamp is null
+          // Sort documents based on timestamp
           documents.sort((a, b) {
             Timestamp? timestampA =
                 (a.data() as Map<String, dynamic>)['timestamp'];
@@ -162,28 +158,24 @@ class PdfViewerScreen extends StatefulWidget {
 }
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
-  String? localFilePath;
-  bool isLoading = true; // Track the loading state
+  Future<String>? localFilePathFuture;
 
   @override
   void initState() {
     super.initState();
-    _downloadFile();
+    localFilePathFuture = _downloadFile(widget.pdfUrl);
   }
 
-  Future<void> _downloadFile() async {
+  Future<String> _downloadFile(String url) async {
     Dio dio = Dio();
     var tempDir = await getTemporaryDirectory();
-    localFilePath = '${tempDir.path}/temp.pdf';
+    String localFilePath = '${tempDir.path}/temp.pdf';
     try {
-      await dio.download(widget.pdfUrl, localFilePath);
-      if (mounted) {
-        setState(() {
-          isLoading = false; // Set loading to false once the file is downloaded
-        });
-      }
+      await dio.download(url, localFilePath);
+      return localFilePath;
     } catch (e) {
-      print('error in $e');
+      print('Error downloading file: $e');
+      throw e; // rethrow the exception to handle it in the FutureBuilder
     }
   }
 
@@ -194,30 +186,30 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         title: Text('PDF Viewer'),
         backgroundColor: Color(0xFF7A9E9F),
       ),
-      body: Stack(
-        children: [
-          // PDF Viewer
-          localFilePath != null
-              ? PDFView(
-                  filePath: localFilePath,
-                )
-              : Center(
-                  child: CircularProgressIndicator(),
-                ),
-
-          // Loading Overlay
-          if (isLoading)
-            Center(
-              child: Container(
-                color: Colors.black.withOpacity(0.7),
-                child: SpinKitFadingCircle(
-                  // SpinKit for a better loading effect
-                  color: Colors.white,
-                  size: 50.0,
-                ),
+      body: FutureBuilder<String>(
+        future: localFilePathFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: SpinKitFadingCircle(
+                color: Colors.black54,
+                size: 50.0,
               ),
-            ),
-        ],
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error loading PDF'),
+            );
+          } else if (snapshot.hasData) {
+            return PDFView(
+              filePath: snapshot.data!,
+            );
+          } else {
+            return Center(
+              child: Text('No PDF available'),
+            );
+          }
+        },
       ),
     );
   }

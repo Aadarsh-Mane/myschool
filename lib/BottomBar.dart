@@ -4,9 +4,9 @@ import 'package:myschool/RegisterScreen.dart';
 import 'package:myschool/Snack.dart';
 import 'package:myschool/controllers/AuthScreen.dart';
 import 'package:myschool/main.dart';
-import 'package:myschool/pages/shared/my_page_button.dart';
-import 'package:myschool/user/HomePage.dart';
-import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:myschool/views/pages/my_page_button.dart';
+import 'package:myschool/views/user/HomePage.dart';
+import 'package:myschool/views/user/YoutubeWatchScreen.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/quickalert.dart';
 

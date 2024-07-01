@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:myschool/ResponseModel.dart';
+import 'package:myschool/models/ResponseModel.dart';
 import 'package:http/http.dart' as http;
 
 class API {

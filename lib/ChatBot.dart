@@ -5,8 +5,8 @@ import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:myschool/Consta.dart';
-import 'package:myschool/providers/ChatProvider.dart';
-import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:myschool/controllers/ChatProvider.dart';
+import 'package:myschool/views/user/YoutubeWatchScreen.dart';
 import 'package:provider/provider.dart';
 
 class MyMyMyChatScreen extends StatefulWidget {

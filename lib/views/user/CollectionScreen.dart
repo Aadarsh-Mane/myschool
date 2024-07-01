@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:myschool/pages/HomeWork.dart';
-import 'package:myschool/user/HomeWork/ClassEight.dart';
-import 'package:myschool/user/HomeWork/Econtent.dart';
-import 'package:myschool/user/HomeWork/HomeWorkSpecific.dart';
-import 'package:myschool/user/TimeTableScreen.dart';
+import 'package:myschool/views/pages/HomeWork.dart';
+import 'package:myschool/views/user/HomeWork/ClassEight.dart';
+import 'package:myschool/views/user/HomeWork/Econtent.dart';
+import 'package:myschool/views/user/HomeWork/HomeWorkSpecific.dart';
+import 'package:myschool/views/user/TimeTableScreen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';

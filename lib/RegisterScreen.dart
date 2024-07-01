@@ -8,7 +8,7 @@ import 'package:myschool/widgets/QrScanner.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:myschool/BottomBar.dart';
-import 'package:myschool/user/LoginScreen.dart';
+import 'package:myschool/views/user/LoginScreen.dart';
 
 class UserAlreadyExistsException implements Exception {
   final String message;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myschool/RegisterScreen.dart';
-import 'package:myschool/pages/CalenderEvent.dart';
-import 'package:myschool/pages/YoutubePage.dart';
-import 'package:myschool/pages/home_page.dart';
+import 'package:myschool/views/pages/CalenderEvent.dart';
+import 'package:myschool/views/pages/YoutubePage.dart';
+import 'package:myschool/views/pages/home_page.dart';
 import 'package:myschool/pages/shared/Classes_info.dart';
-import 'package:myschool/pages/time_table_page.dart';
+import 'package:myschool/views/pages/time_table_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ButtonPage extends StatefulWidget {

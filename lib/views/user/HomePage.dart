@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/ChatBot.dart';
-import 'package:myschool/pages/shared/my_page_button.dart';
-import 'package:myschool/providers/UserProvider.dart';
-import 'package:myschool/user/CollectionScreen.dart';
-import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:myschool/views/pages/my_page_button.dart';
+import 'package:myschool/controllers/UserProvider.dart';
+import 'package:myschool/views/user/CollectionScreen.dart';
+import 'package:myschool/views/user/YoutubeWatchScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 

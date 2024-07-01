@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myschool/ResponseModel.dart';
+import 'package:myschool/models/ResponseModel.dart';
 import 'package:myschool/api/api.dart';
 
 class MeaningScreen extends StatefulWidget {

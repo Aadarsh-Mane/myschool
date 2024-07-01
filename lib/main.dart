@@ -24,23 +24,23 @@ import 'package:myschool/floaf.dart';
 import 'package:myschool/introScreen/IntroScreen.dart';
 import 'package:myschool/modalsheet/create_sheet.dart';
 
-import 'package:myschool/pages/CalenderEvent.dart';
-import 'package:myschool/pages/HomeWork.dart';
+import 'package:myschool/views/pages/CalenderEvent.dart';
+import 'package:myschool/views/pages/HomeWork.dart';
 import 'package:myschool/pages/SpecificHomeWork/EigthClass.dart';
 import 'package:myschool/pages/SpecificHomeWork/NineClass.dart';
 import 'package:myschool/pages/e-content/econtent_page.dart';
-import 'package:myschool/pages/home_page.dart';
-import 'package:myschool/pages/shared/my_page_button.dart';
-import 'package:myschool/pages/time_table_page.dart';
-import 'package:myschool/providers/ChatProvider.dart';
-import 'package:myschool/providers/UserProvider.dart';
-import 'package:myschool/user/CalenderEvent.dart';
-import 'package:myschool/user/HomePage.dart';
-import 'package:myschool/user/HomeWork/ClassEight.dart';
-import 'package:myschool/user/HomeWork/DashboardScreen.dart';
-import 'package:myschool/user/MeetingScreen.dart';
-import 'package:myschool/user/TimeTableScreen.dart';
-import 'package:myschool/user/YoutubeWatchScreen.dart';
+import 'package:myschool/views/pages/home_page.dart';
+import 'package:myschool/views/pages/my_page_button.dart';
+import 'package:myschool/views/pages/time_table_page.dart';
+import 'package:myschool/controllers/ChatProvider.dart';
+import 'package:myschool/controllers/UserProvider.dart';
+import 'package:myschool/views/user/CalenderEvent.dart';
+import 'package:myschool/views/user/HomePage.dart';
+import 'package:myschool/views/user/HomeWork/ClassEight.dart';
+import 'package:myschool/views/user/HomeWork/DashboardScreen.dart';
+import 'package:myschool/views/user/MeetingScreen.dart';
+import 'package:myschool/views/user/TimeTableScreen.dart';
+import 'package:myschool/views/user/YoutubeWatchScreen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
