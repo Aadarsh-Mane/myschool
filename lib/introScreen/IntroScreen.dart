@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/RegisterScreen.dart';
 import 'package:myschool/controllers/AuthScreen.dart';
+import 'package:myschool/introScreen/SplashScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 
 class ConcentricTransitionPage extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ConcentricTransitionPageState extends State<ConcentricTransitionPage> {
   Widget build(BuildContext context) {
     if (_isLoggedIn) {
       // If logged in, navigate to main content
-      return BottomBar();
+      return SplashScreen();
     } else {
       // Otherwise, show intro screen
       return _showIntro ? _buildIntroScreen() : BuyerRegisterScreen();

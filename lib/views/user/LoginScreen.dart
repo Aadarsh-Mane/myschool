@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myschool/BottomBar.dart';
 import 'package:myschool/Snack.dart';
 import 'package:myschool/controllers/AuthScreen.dart';
+import 'package:myschool/introScreen/SplashScreen.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _navigateToBottomBar() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => BottomBar()),
+      MaterialPageRoute(builder: (context) => SplashScreen()),
       (route) => false,
     );
   }

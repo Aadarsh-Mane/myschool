@@ -13,16 +13,18 @@ import 'package:myschool/controllers/ChatProvider.dart';
 import 'package:myschool/controllers/LogoutScreen.dart';
 import 'package:myschool/controllers/UserProvider.dart';
 import 'package:myschool/introScreen/IntroScreen.dart';
+import 'package:myschool/views/pages/my_page_button.dart';
 import 'package:myschool/views/user/CalenderEvent.dart';
 import 'package:myschool/views/user/HomePage.dart';
 import 'package:myschool/views/user/HomeWork/DashboardScreen.dart';
+import 'package:myschool/views/user/HomeWork/Econtent.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await UserSheetsApi.init();
-  await FirebaseApi().initNotification();
+  // await FirebaseApi().initNotification();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -73,6 +75,7 @@ class MyApp extends StatelessWidget {
       // home: NotificationScreen()
       // home: BuyerRegisterScreen()
       // home: ButtonPage()
+      // home: EcontenScreen()
       // home: NotificationScreen()
       // home: UserCalendarScreen()
       // home: UserCalendarScreen()

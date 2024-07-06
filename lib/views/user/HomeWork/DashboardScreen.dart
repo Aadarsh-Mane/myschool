@@ -12,12 +12,26 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   List<String> collectionNames = [
-    'nineth',
-    'Eight'
+    'one',
+    'two',
+    'three',
+    'four',
+    'six',
+    'seven',
+    'eight',
+    'nine',
+    'tenth'
   ]; // Add more collection names as needed
   Map<String, String> collectionPasswords = {
-    'nineth': '1234',
-    'Eight': '8b',
+    'one': 'one',
+    'two': '1234',
+    'three': '1234',
+    'four': '1234',
+    'six': '1234',
+    'seven': '1234',
+    'eight:': '1234',
+    'nine': '1234',
+    'tenth': '1234',
   };
 
   Map<String, int> notificationCounts = {};
@@ -61,10 +75,34 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 children: [
                   // itemDashboard('Events', CupertinoIcons.play_rectangle,
                   //     Colors.deepOrange, 'notes', ''),
-                  itemDashboard('Class 9th', CupertinoIcons.chat_bubble_2,
-                      Colors.brown, 'nineth', '1234'),
-                  itemDashboard('Class 8th', CupertinoIcons.chat_bubble_2,
-                      Colors.brown, 'Eight', '8b'),
+                  // itemDashboard('Class 9th', CupertinoIcons.info_circle_fill,
+                  //     Colors.brown, 'nineth', '1234'),
+                  // itemDashboard('Class 8th', CupertinoIcons.info_circle_fill,
+                  //     Colors.brown, 'one', '8b'),
+                  itemDashboard('1st standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'one', 'one'),
+                  itemDashboard('2nd standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'two', 'one'),
+                  itemDashboard('3rd standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'three', 'one'),
+                  itemDashboard('4th standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'four', 'one'),
+                  itemDashboard('5th standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'five', 'one'),
+                  itemDashboard('6th standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'sixth', 'one'),
+                  itemDashboard('7th standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'seven', 'one'),
+                  itemDashboard('8th standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'eigth', 'one'),
+                  itemDashboard('9th standard', CupertinoIcons.info_circle_fill,
+                      Colors.brown, 'nine', 'one'),
+                  itemDashboard(
+                      '10th standard',
+                      CupertinoIcons.info_circle_fill,
+                      Colors.brown,
+                      'ten',
+                      'one'),
                 ],
               ),
             ),
@@ -169,7 +207,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 style: Theme.of(context).textTheme.subtitle1),
             SizedBox(height: 4),
             Text(
-              'Unread: $notificationCount',
+              'Total: $notificationCount',
               style: TextStyle(fontSize: 12, color: Colors.red),
             ),
           ],

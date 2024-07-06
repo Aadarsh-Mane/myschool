@@ -84,6 +84,8 @@ dependencies:
   image_cropper: ^5.0.1
   flutter_launcher_icons: ^0.13.1
   rename_app: ^1.6.1
+  permission_handler: ^11.3.1
+  carousel_slider: ^4.2.1
   
 
 dev_dependencies:
@@ -93,7 +95,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/playstore.png"
+  image_path: "assets/images/logot.png"
   adaptive_icon_foreground: "assets/images/playstore.png"
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

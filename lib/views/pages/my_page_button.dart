@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myschool/RegisterScreen.dart';
+import 'package:myschool/pages/e-content/econtent_page.dart';
+import 'package:myschool/views/admin/NotifcationScreen.dart';
 import 'package:myschool/views/pages/CalenderEvent.dart';
 import 'package:myschool/views/pages/YoutubePage.dart';
 import 'package:myschool/views/pages/home_page.dart';
@@ -75,6 +77,18 @@ class _ButtonPageState extends State<ButtonPage> {
             ),
             ElevatedButton(
               onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddDocumentPage()));
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green, // Button color
+                onPrimary: Colors.white, // Text color
+              ),
+              child: const Text('Add E-content'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -113,24 +127,17 @@ class _ButtonPageState extends State<ButtonPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Action for the fourth button
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // Button color
-                onPrimary: Colors.white, // Text color
-              ),
-              child: const Text('Notice'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
                 // Action for the fifth button
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => NotificationScreen()));
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.purple, // Button color
                 onPrimary: Colors.white, // Text color
               ),
-              child: const Text(''),
+              child: const Text('Send Notification'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

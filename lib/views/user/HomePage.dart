@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 class UserHomePage extends StatefulWidget {
-  const UserHomePage({super.key});
+  const UserHomePage({Key? key}) : super(key: key);
 
   @override
   State<UserHomePage> createState() => _UserHomePageState();
@@ -23,7 +23,7 @@ class _UserHomePageState extends State<UserHomePage> {
   List<String> collectionNames = [
     'notes',
     'timetable',
-    'data',
+    'econtent',
     'events',
     'ninea',
   ]; // Add more collection names as needed
@@ -80,59 +80,67 @@ class _UserHomePageState extends State<UserHomePage> {
               Container(
                 decoration: BoxDecoration(
                   color: Color(0xFFF5EEE6),
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(50),
                   ),
                 ),
                 child: Column(
                   children: [
                     ListTile(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 30),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.1),
                       title: Text(
                         'Hello, ${userProvider.fullName}!',
                         style: Theme.of(context)
                             .textTheme
-                            .headlineSmall
+                            .headline6
                             ?.copyWith(color: Colors.cyan),
                       ),
                       subtitle: Text(
                         'Welcome to HORIZON',
                         style: Theme.of(context)
                             .textTheme
-                            .titleMedium
+                            .subtitle1
                             ?.copyWith(color: Colors.cyan[300]),
                       ),
                       trailing: CircleAvatar(
                         backgroundColor: Colors.white,
-                        radius: 30,
+                        radius: MediaQuery.of(context).size.width * 0.1,
                         backgroundImage: userProvider.imageUrl.isNotEmpty
                             ? NetworkImage(userProvider.imageUrl)
                             : AssetImage('assets/images/logot.png')
-                                as ImageProvider,
+                                as ImageProvider<Object>,
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   ],
                 ),
               ),
               Container(
                 color: Color(0xFFF5EEE6),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  decoration: const BoxDecoration(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.1),
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('assets/images/logot.png')),
+                      image: AssetImage('assets/images/logot.png'),
+                      fit: BoxFit.cover,
+                    ),
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.only(topLeft: Radius.circular(200)),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(
+                          MediaQuery.of(context).size.width * 0.2),
+                    ),
                   ),
                   child: GridView.count(
                     shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 40,
-                    mainAxisSpacing: 30,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount:
+                        MediaQuery.of(context).size.width < 600 ? 2 : 4,
+                    crossAxisSpacing:
+                        MediaQuery.of(context).size.width < 600 ? 20 : 40,
+                    mainAxisSpacing:
+                        MediaQuery.of(context).size.width < 600 ? 35 : 30,
                     children: [
                       itemDashboard(
                           'Events', Icons.event, Colors.deepOrange, 'notes'),
@@ -143,31 +151,32 @@ class _UserHomePageState extends State<UserHomePage> {
                       itemDashboard(
                           'Announcement', Icons.chat, Colors.brown, 'notes'),
                       itemDashboard(
-                          'E-content', Icons.article, Colors.blue, 'data'),
+                          'E-content', Icons.article, Colors.blue, 'econtent'),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             ],
           ),
           Positioned(
-            bottom: 20,
-            right: 20,
+            bottom: MediaQuery.of(context).size.height * 0.03,
+            right: MediaQuery.of(context).size.width * 0.03,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
-                    padding: EdgeInsets.all(12),
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.03),
                   ),
                   onPressed: () {
                     _showLoginDialog(context);
                   },
                   child: Icon(Icons.admin_panel_settings, size: 30),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 FloatingActionButton(
                   backgroundColor: Colors.white,
                   onPressed: () {
@@ -206,7 +215,7 @@ class _UserHomePageState extends State<UserHomePage> {
           borderRadius: BorderRadius.circular(13),
           boxShadow: [
             BoxShadow(
-              offset: const Offset(0, 5),
+              offset: Offset(0, 5),
               color: Theme.of(context).primaryColor.withOpacity(.2),
               spreadRadius: 10,
               blurRadius: 10,
@@ -217,20 +226,20 @@ class _UserHomePageState extends State<UserHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               decoration: BoxDecoration(
                 color: background,
                 shape: BoxShape.circle,
               ),
               child: Icon(iconData, color: Colors.white),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(title.toUpperCase(),
-                  style: Theme.of(context).textTheme.titleSmall),
+                  style: Theme.of(context).textTheme.subtitle2),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.005),
             FittedBox(
               child: Text(
                 'Unread: $notificationCount',
@@ -260,7 +269,7 @@ class _UserHomePageState extends State<UserHomePage> {
             type: MaterialType.transparency,
             child: Container(
               width: MediaQuery.of(context).size.width * 0.8,
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -279,7 +288,7 @@ class _UserHomePageState extends State<UserHomePage> {
                     'Admin Login',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   TextField(
                     controller: idController,
                     decoration: InputDecoration(
@@ -287,7 +296,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   TextField(
                     controller: passwordController,
                     decoration: InputDecoration(
@@ -296,7 +305,7 @@ class _UserHomePageState extends State<UserHomePage> {
                     ),
                     obscureText: true,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   ElevatedButton(
                     onPressed: () {
                       if (idController.text == '123' &&

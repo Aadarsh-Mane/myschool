@@ -212,6 +212,11 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+
     return WillPopScope(
       onWillPop: () async {
         bool isAuthenticated = await _authController.isUserAuthenticated();
@@ -221,6 +226,10 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         backgroundColor: Color(0xFFF5EEE6),
         body: Center(
           child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenHeight * 0.02,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -228,9 +237,10 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    radius: 100,
+                    radius: screenWidth * 0.15,
                     backgroundImage: AssetImage('assets/images/logot.png'),
                   ),
+                  SizedBox(height: screenHeight * 0.02),
                   _buildTextField('Enter Email', (value) {
                     email = value;
                   }),
@@ -243,20 +253,24 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
                   _buildTextField('Password', (value) {
                     password = value;
                   }, obscureText: true),
-                  _buildDropdown(), // User type dropdown
+                  _buildDropdown(),
                   _buildTextField('School ID', (value) {
                     schoolId = value;
                   }),
                   _buildTextField('School Pass', (value) {
                     schoolPass = value;
                   }, obscureText: true),
+                  SizedBox(height: screenHeight * 0.02),
                   if (_selectedImage != null)
-                    Image.file(File(_selectedImage!.path), height: 100),
-                  _buildImagePickerButton(), // Image picker button always shown
-                  _buildRegisterButton(),
+                    Image.file(File(_selectedImage!.path),
+                        height: screenHeight * 0.2, fit: BoxFit.cover),
+                  _buildImagePickerButton(),
+                  SizedBox(height: screenHeight * 0.02),
+                  _buildRegisterButton(screenWidth),
+                  SizedBox(height: screenHeight * 0.01),
                   _buildLoginLink(),
-                  SizedBox(height: 20), // Add some spacing
-                  _buildQRScannerButton(), // Add the QR scanner button
+                  SizedBox(height: screenHeight * 0.04),
+                  _buildQRScannerButton(screenWidth),
                 ],
               ),
             ),
@@ -269,7 +283,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
   Widget _buildTextField(String labelText, Function(String) onChanged,
       {bool obscureText = false}) {
     return Padding(
-      padding: const EdgeInsets.all(13.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextFormField(
         obscureText: obscureText,
         validator: (value) {
@@ -283,6 +297,8 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(),
+          filled: true,
+          fillColor: Color(0xFFF5EEE6),
         ),
       ),
     );
@@ -290,7 +306,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
 
   Widget _buildDropdown() {
     return Padding(
-      padding: const EdgeInsets.all(13.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: DropdownButtonFormField<String>(
         value: userType,
         items: ['Student', 'Teacher'].map((String type) {
@@ -307,6 +323,8 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         decoration: InputDecoration(
           labelText: 'Select User Type',
           border: OutlineInputBorder(),
+          filled: true,
+          // fillColor: Colors.white,
         ),
       ),
     );
@@ -314,13 +332,13 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
 
   Widget _buildImagePickerButton() {
     return Padding(
-      padding: const EdgeInsets.all(13.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: ElevatedButton.icon(
         onPressed: _pickImage,
-        icon: Icon(Icons.photo_camera), // Example icon, you can change this
+        icon: Icon(Icons.photo_camera),
         label: Text(_selectedImage == null ? 'Pick Image' : 'Change Image'),
         style: ElevatedButton.styleFrom(
-          primary: Colors.orange, // Button color
+          primary: Colors.orange,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -329,11 +347,11 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
     );
   }
 
-  Widget _buildRegisterButton() {
+  Widget _buildRegisterButton(double screenWidth) {
     return GestureDetector(
       onTap: _signUpUser,
       child: Container(
-        width: MediaQuery.of(context).size.width - 40,
+        width: screenWidth * 0.9,
         height: 50,
         decoration: BoxDecoration(
           color: Colors.orange,
@@ -347,8 +365,9 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
               : Text(
                   'Register',
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
         ),
@@ -375,15 +394,15 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
     );
   }
 
-  Widget _buildQRScannerButton() {
+  Widget _buildQRScannerButton(double screenWidth) {
     return Padding(
-      padding: const EdgeInsets.all(13.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: ElevatedButton.icon(
         onPressed: _scanQRCode,
-        icon: Icon(Icons.qr_code), // Example icon, you can change this
-        label: Text('Admin '),
+        icon: Icon(Icons.qr_code),
+        label: Text('Admin QR Scanner'),
         style: ElevatedButton.styleFrom(
-          primary: Colors.blue, // Button color
+          primary: Colors.blue,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

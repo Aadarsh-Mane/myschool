@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image/image.dart' as img;
 import 'dart:io';
 
 class ClassScreen extends StatefulWidget {
@@ -19,10 +18,12 @@ class _ClassScreenState extends State<ClassScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final ImagePicker picker = ImagePicker(); // ImagePicker instance
 
-  String _selectedOption = 'All';
+  String _selecteddivison = 'All';
   String? _selectedDocumentId;
-  File? _selectedImage;
+  List<File> _selectedImages = [];
+  List<String> _uploadedImageUrls = []; // URLs of uploaded images
   bool _uploadingImage = false;
 
   @override
@@ -45,10 +46,10 @@ class _ClassScreenState extends State<ClassScreen> {
             ),
             SizedBox(height: 20),
             DropdownButton<String>(
-              value: _selectedOption,
+              value: _selecteddivison,
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedOption = newValue!;
+                  _selecteddivison = newValue!;
                 });
               },
               items: <String>['All', 'A', 'B', 'C', 'D', 'E', 'F']
@@ -62,10 +63,47 @@ class _ClassScreenState extends State<ClassScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Pick Image'),
+              onPressed: _pickMultipleImages,
+              child: Text('Pick Images'),
             ),
-            _selectedImage != null ? Image.file(_selectedImage!) : Container(),
+            SizedBox(height: 10),
+            // Display selected images if any
+            _selectedImages.isNotEmpty
+                ? SizedBox(
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _selectedImages.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            children: [
+                              Image.file(
+                                _selectedImages[index],
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.cancel),
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedImages.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : Container(),
             SizedBox(height: 20),
             Row(
               children: [
@@ -92,21 +130,13 @@ class _ClassScreenState extends State<ClassScreen> {
     );
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> _pickMultipleImages() async {
+    final pickedFiles = await picker.pickMultiImage();
 
-    if (pickedFile != null) {
-      final File imageFile = File(pickedFile.path);
-      img.Image image = img.decodeImage(imageFile.readAsBytesSync())!;
-
-      img.Image resizedImage = img.copyResize(image, width: 200, height: 200);
-
-      final resizedImageFile = File(pickedFile.path)
-        ..writeAsBytesSync(img.encodeJpg(resizedImage));
-
+    if (pickedFiles != null) {
       setState(() {
-        _selectedImage = resizedImageFile;
+        _selectedImages =
+            pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
       });
     }
   }
@@ -118,21 +148,21 @@ class _ClassScreenState extends State<ClassScreen> {
         _uploadingImage = true;
       });
 
-      String? imageUrl = await _uploadImage();
+      _uploadedImageUrls = await _uploadImages();
 
       await _firestore.collection(widget.collectionName).add({
         'title': _titleController.text,
         'description': _descriptionController.text,
-        'option': _selectedOption,
-        'image': imageUrl,
+        'divison': _selecteddivison,
+        'images': _uploadedImageUrls,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
       _titleController.clear();
       _descriptionController.clear();
       setState(() {
-        _selectedOption = 'All';
-        _selectedImage = null;
+        _selecteddivison = 'All';
+        _selectedImages.clear();
         _uploadingImage = false;
       });
     }
@@ -145,20 +175,14 @@ class _ClassScreenState extends State<ClassScreen> {
         _uploadingImage = true;
       });
 
-      String? imageUrl;
-      if (_selectedImage != null) {
-        imageUrl = await _uploadImage();
-      }
+      _uploadedImageUrls = await _uploadImages();
 
       Map<String, dynamic> updatedData = {
         'title': _titleController.text,
         'description': _descriptionController.text,
-        'option': _selectedOption,
+        'divison': _selecteddivison,
+        'images': _uploadedImageUrls,
       };
-
-      if (imageUrl != null) {
-        updatedData['image'] = imageUrl;
-      }
 
       await _firestore
           .collection(widget.collectionName)
@@ -168,9 +192,9 @@ class _ClassScreenState extends State<ClassScreen> {
       _titleController.clear();
       _descriptionController.clear();
       setState(() {
-        _selectedOption = 'All';
+        _selecteddivison = 'All';
         _selectedDocumentId = null;
-        _selectedImage = null;
+        _selectedImages.clear();
         _uploadingImage = false;
       });
     }
@@ -193,8 +217,8 @@ class _ClassScreenState extends State<ClassScreen> {
               var document = data?[index];
               var title = document?['title'];
               var description = document?['description'];
-              var option = document?['option'];
-              var imageUrl = document?['image'];
+              var divison = document?['divison'];
+              var imageUrls = List<String>.from(document?['images'] ?? []);
 
               return Card(
                 child: ListTile(
@@ -203,19 +227,29 @@ class _ClassScreenState extends State<ClassScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(description),
-                      Text('Option: $option'),
-                      imageUrl != null
-                          ? GestureDetector(
-                              onTap: () {
-                                _viewImage(imageUrl);
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  imageUrl,
-                                  height: 120,
-                                  width: 80,
-                                ),
+                      Text('divison: $divison'),
+                      SizedBox(height: 8),
+                      // Display uploaded images if any
+                      imageUrls.isNotEmpty
+                          ? SizedBox(
+                              height: 120,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: imageUrls.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.network(
+                                        imageUrls[index],
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             )
                           : Container(),
@@ -234,7 +268,7 @@ class _ClassScreenState extends State<ClassScreen> {
                         icon: Icon(Icons.edit),
                         onPressed: () {
                           _selectDocumentForUpdate(
-                              document!.id, title, description, option);
+                              document!.id, title, description, divison);
                         },
                       ),
                     ],
@@ -275,16 +309,20 @@ class _ClassScreenState extends State<ClassScreen> {
     );
   }
 
-  Future<String> _uploadImage() async {
-    if (_selectedImage == null) return '';
+  Future<List<String>> _uploadImages() async {
+    List<String> imageUrls = [];
 
-    final Reference storageRef = FirebaseStorage.instance
-        .ref()
-        .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-    final UploadTask uploadTask = storageRef.putFile(_selectedImage!);
-    await uploadTask.whenComplete(() => null);
+    for (var imageFile in _selectedImages) {
+      final Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final UploadTask uploadTask = storageRef.putFile(imageFile);
+      await uploadTask.whenComplete(() => null);
+      var downloadUrl = await storageRef.getDownloadURL();
+      imageUrls.add(downloadUrl);
+    }
 
-    return await storageRef.getDownloadURL();
+    return imageUrls;
   }
 
   Future<void> _deleteData(String documentId) async {
@@ -292,12 +330,12 @@ class _ClassScreenState extends State<ClassScreen> {
   }
 
   void _selectDocumentForUpdate(
-      String documentId, String title, String description, String option) {
+      String documentId, String title, String description, String divison) {
     setState(() {
       _selectedDocumentId = documentId;
       _titleController.text = title;
       _descriptionController.text = description;
-      _selectedOption = option;
+      _selecteddivison = divison;
     });
   }
 }
