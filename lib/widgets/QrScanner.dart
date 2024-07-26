@@ -125,7 +125,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blueAccent,
+                        backgroundColor: Colors.blueAccent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

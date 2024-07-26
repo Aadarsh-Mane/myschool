@@ -81,7 +81,7 @@ class _EcontenScreenState extends State<EcontenScreen> {
                             },
                             child: Text('Standard: $standard'),
                             style: ElevatedButton.styleFrom(
-                              primary: selectedStandard == standard
+                              backgroundColor: selectedStandard == standard
                                   ? Colors.blue
                                   : Colors.grey,
                             ),
@@ -317,7 +317,7 @@ class _EcontenScreenState extends State<EcontenScreen> {
                                   icon: Icon(Icons.share),
                                   label: Text('Share'),
                                   style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue,
+                                    backgroundColor: Colors.blue,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),

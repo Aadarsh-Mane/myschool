@@ -204,7 +204,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             ),
             SizedBox(height: 8),
             Text(title.toUpperCase(),
-                style: Theme.of(context).textTheme.subtitle1),
+                style: Theme.of(context).textTheme.titleMedium),
             SizedBox(height: 4),
             Text(
               'Total: $notificationCount',

@@ -70,8 +70,8 @@ class _ButtonPageState extends State<ButtonPage> {
                     MaterialPageRoute(builder: (context) => HomePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.green, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green, // Text color
               ),
               child: const Text('Announcements'),
             ),
@@ -81,8 +81,8 @@ class _ButtonPageState extends State<ButtonPage> {
                     MaterialPageRoute(builder: (context) => AddDocumentPage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.green, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green, // Text color
               ),
               child: const Text('Add E-content'),
             ),
@@ -95,8 +95,8 @@ class _ButtonPageState extends State<ButtonPage> {
                         builder: (context) => EventCalendarScreen()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.green, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.green, // Text color
               ),
               child: const Text('calendar'),
             ),
@@ -107,8 +107,8 @@ class _ButtonPageState extends State<ButtonPage> {
                     MaterialPageRoute(builder: (context) => TimetablePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.orange, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.orange, // Text color
               ),
               child: const Text('Time Table'),
             ),
@@ -119,8 +119,8 @@ class _ButtonPageState extends State<ButtonPage> {
                     MaterialPageRoute(builder: (context) => YoutubePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.red, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.red, // Text color
               ),
               child: const Text('Youtube link'),
             ),
@@ -134,8 +134,8 @@ class _ButtonPageState extends State<ButtonPage> {
                         builder: (context) => NotificationScreen()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.purple, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.purple, // Text color
               ),
               child: const Text('Send Notification'),
             ),
@@ -146,8 +146,8 @@ class _ButtonPageState extends State<ButtonPage> {
                     MaterialPageRoute(builder: (context) => ClassInfoScreen()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.teal, // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.teal, // Text color
               ),
               child: const Text('Add Homework/Assignment/Info'),
             ),

@@ -59,8 +59,8 @@ class ClassInfoScreen extends StatelessWidget {
             ));
       },
       style: ElevatedButton.styleFrom(
-        primary: Colors.blue,
-        onPrimary: Colors.white,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 16),
       ),
       child: Text(

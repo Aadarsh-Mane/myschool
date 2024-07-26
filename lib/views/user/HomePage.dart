@@ -93,14 +93,14 @@ class _UserHomePageState extends State<UserHomePage> {
                         'Hello, ${userProvider.fullName}!',
                         style: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(color: Colors.cyan),
                       ),
                       subtitle: Text(
                         'Welcome to HORIZON',
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1
+                            .titleMedium
                             ?.copyWith(color: Colors.cyan[300]),
                       ),
                       trailing: CircleAvatar(
@@ -149,7 +149,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       itemDashboard(
                           'Latest', Icons.person, Colors.purple, 'notes'),
                       itemDashboard(
-                          'Announcement', Icons.chat, Colors.brown, 'notes'),
+                          'Attendes', Icons.chat, Colors.brown, 'absences'),
                       itemDashboard(
                           'E-content', Icons.article, Colors.blue, 'econtent'),
                     ],
@@ -235,10 +235,14 @@ class _UserHomePageState extends State<UserHomePage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(title.toUpperCase(),
-                  style: Theme.of(context).textTheme.subtitle2),
-            ),
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title.toUpperCase(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: Colors.cyan[300]),
+                )),
             SizedBox(height: MediaQuery.of(context).size.height * 0.005),
             FittedBox(
               child: Text(

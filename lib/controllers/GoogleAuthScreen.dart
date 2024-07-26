@@ -13,7 +13,7 @@ class GoogleAuthScreen extends StatelessWidget {
             AuthService().signInWithGoogle();
           },
           style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
+            backgroundColor: Colors.blue,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

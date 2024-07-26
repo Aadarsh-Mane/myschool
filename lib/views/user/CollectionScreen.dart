@@ -41,9 +41,9 @@ class CollectionDataScreen extends StatelessWidget {
         return EcontenScreen(
           collectionName: 'econtent',
         );
-      case 'nineth':
+      case 'absences':
         return HomeWorkSpecific(
-          collectionName: 'nineth',
+          collectionName: 'absences',
         );
       case 'one':
         return ClassOne(

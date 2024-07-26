@@ -338,7 +338,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         icon: Icon(Icons.photo_camera),
         label: Text(_selectedImage == null ? 'Pick Image' : 'Change Image'),
         style: ElevatedButton.styleFrom(
-          primary: Colors.orange,
+          backgroundColor: Colors.orange,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -402,7 +402,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
         icon: Icon(Icons.qr_code),
         label: Text('Admin QR Scanner'),
         style: ElevatedButton.styleFrom(
-          primary: Colors.blue,
+          backgroundColor: Colors.blue,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
