@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:myschool/views/pages/HomeWork.dart';
+import 'package:myschool/views/user/AbsentScreen.dart';
 import 'package:myschool/views/user/HomeWork/ClassEight.dart';
 import 'package:myschool/views/user/HomeWork/Econtent.dart';
 import 'package:myschool/views/user/HomeWork/HomeWorkSpecific.dart';
@@ -42,9 +43,9 @@ class CollectionDataScreen extends StatelessWidget {
           collectionName: 'econtent',
         );
       case 'absences':
-        return HomeWorkSpecific(
-          collectionName: 'absences',
-        );
+        return AbsentScreen(
+            // collectionName: 'absences',
+            );
       case 'one':
         return ClassOne(
           collectionName: 'one',

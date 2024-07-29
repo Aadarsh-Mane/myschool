@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextFormField(
         obscureText: obscureText,
         validator: (value) {
-          if (value!.isEmpty) {
+          if (value!.trim().isEmpty) {
             _showErrorSnackbar('Please fill in all fields.');
 
             return '';
@@ -120,7 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
             return null;
           }
         },
-        onChanged: onChanged,
+        onChanged: (value) {
+          onChanged(value.trim()); // Call onChanged with trimmed value
+        },
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(),

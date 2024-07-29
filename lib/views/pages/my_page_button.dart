@@ -7,6 +7,7 @@ import 'package:myschool/views/pages/YoutubePage.dart';
 import 'package:myschool/views/pages/home_page.dart';
 import 'package:myschool/pages/shared/Classes_info.dart';
 import 'package:myschool/views/pages/time_table_page.dart';
+import 'package:myschool/views/user/HomeWork/StudentAttende.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ButtonPage extends StatefulWidget {
@@ -111,6 +112,17 @@ class _ButtonPageState extends State<ButtonPage> {
                 backgroundColor: Colors.orange, // Text color
               ),
               child: const Text('Time Table'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StudentAttende()));
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.orange, // Text color
+              ),
+              child: const Text('Attendees'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

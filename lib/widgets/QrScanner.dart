@@ -16,7 +16,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
   Barcode? result;
   QRViewController? controller;
   bool scanningPaused = false; // Flag to track if scanning is paused
-  final String correctPassword = "school123"; // The correct password
+  final String correctPassword = "Rayat@123"; // The correct password
   late AnimationController _animationController;
 
   @override

@@ -289,7 +289,7 @@ class _UserHomePageState extends State<UserHomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Admin Login',
+                    'Teacher  Login',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -312,8 +312,8 @@ class _UserHomePageState extends State<UserHomePage> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   ElevatedButton(
                     onPressed: () {
-                      if (idController.text == '123' &&
-                          passwordController.text == 'abc') {
+                      if (idController.text.trim() == 'Schoolstaff' &&
+                          passwordController.text.trim() == 'Teacher') {
                         Navigator.of(context).pop();
                         Navigator.of(context).push(
                           MaterialPageRoute(

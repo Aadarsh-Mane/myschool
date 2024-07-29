@@ -75,7 +75,7 @@ class AuthController {
     } catch (e) {
       if (e is FirebaseAuthException) {
         print("Firebase error signing up: ${e.message}");
-        return 'Firebase error occurred during sign up';
+        return 'Email already exists or is used by another account Please contact admin for more details';
       } else if (e is UserAlreadyExistsException) {
         print(e.message);
         return e.message;

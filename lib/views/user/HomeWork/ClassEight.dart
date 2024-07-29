@@ -78,7 +78,7 @@ class DocumentCard extends StatelessWidget {
     var description = data['description'] ?? 'No Description';
     var timestamp = (data['timestamp'] as Timestamp).toDate();
     var imageUrls = List<String>.from(data['images'] ?? []);
-    var division = data['division'] ?? 'No Division';
+    var division = data['divison'] ?? 'No Division';
 
     return Padding(
       padding: EdgeInsets.all(screenSize.width * 0.04),

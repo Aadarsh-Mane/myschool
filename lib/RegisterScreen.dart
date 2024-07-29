@@ -93,7 +93,7 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
       }
 
       // Check School ID and School Pass
-      if (schoolId != '123' || schoolPass != 'abc') {
+      if (schoolId != 'Horizon' || schoolPass != 'Horizon@24') {
         setState(() {
           _isLoading = false;
         });
@@ -287,13 +287,15 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
       child: TextFormField(
         obscureText: obscureText,
         validator: (value) {
-          if (value!.isEmpty) {
+          if (value!.trim().isEmpty) {
             return ''; // Return empty to trigger form validation without showing text.
           } else {
             return null;
           }
         },
-        onChanged: onChanged,
+        onChanged: (value) {
+          onChanged(value.trim()); // Call onChanged with trimmed value
+        },
         decoration: InputDecoration(
           labelText: labelText,
           border: OutlineInputBorder(),
