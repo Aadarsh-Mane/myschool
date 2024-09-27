@@ -95,7 +95,7 @@ class _QRScannerScreenState extends State<QRScannerScreen>
                     SizedBox(height: 16),
                     TextFormField(
                       controller: passwordController,
-                      obscureText: true,
+                      // obscureText: true,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock),
                         labelText: 'Enter Password',

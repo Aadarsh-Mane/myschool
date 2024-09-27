@@ -307,7 +307,7 @@ class _UserHomePageState extends State<UserHomePage> {
                       labelText: 'Enter Password',
                       border: OutlineInputBorder(),
                     ),
-                    obscureText: true,
+                    // obscureText: true,
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   ElevatedButton(

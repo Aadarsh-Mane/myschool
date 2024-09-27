@@ -133,7 +133,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             return AlertDialog(
               title: Text('Enter Passwordd'),
               content: TextFormField(
-                obscureText: true,
+                // obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Password',
                 ),

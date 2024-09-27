@@ -252,14 +252,14 @@ class _BuyerRegisterScreenState extends State<BuyerRegisterScreen> {
                   }),
                   _buildTextField('Password', (value) {
                     password = value;
-                  }, obscureText: true),
+                  }),
                   _buildDropdown(),
                   _buildTextField('School ID', (value) {
                     schoolId = value;
                   }),
                   _buildTextField('School Pass', (value) {
                     schoolPass = value;
-                  }, obscureText: true),
+                  },),
                   SizedBox(height: screenHeight * 0.02),
                   if (_selectedImage != null)
                     Image.file(File(_selectedImage!.path),

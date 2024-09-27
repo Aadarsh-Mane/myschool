@@ -93,9 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 _buildTextField('Enter Email', (value) {
                   email = value;
                 }),
-                _buildTextField('Password', (value) {
-                  password = value;
-                }, obscureText: true),
+                _buildTextField(
+                  'Password',
+                  (value) {
+                    password = value;
+                  },
+                  // obscureText: true
+                ),
                 _buildLoginButton(),
               ],
             ),

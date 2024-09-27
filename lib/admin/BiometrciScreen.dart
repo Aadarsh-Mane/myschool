@@ -111,9 +111,13 @@ class _BiometricRegistrationScreenState
                   _buildTextField('Enter Phone Number', (value) {
                     phoneNumber = value;
                   }),
-                  _buildTextField('Password', (value) {
-                    password = value;
-                  }, obscureText: true),
+                  _buildTextField(
+                    'Password',
+                    (value) {
+                      password = value;
+                    },
+                    // obscureText: true
+                  ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _isLoading ? null : _registerUser,
